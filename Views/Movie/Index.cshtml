@@ -1,0 +1,483 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt vé xem phim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Custom styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
+            .dark-mode .card {
+                background-color: #333;
+                color: #fff;
+            }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            border: 1px solid #999;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .seat.selected {
+                background-color: #28a745;
+                color: white;
+            }
+
+        .row {
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .screen {
+            background-color: #ccc;
+            height: 10px;
+            width: 80%;
+            margin: 0 auto 30px;
+            border-radius: 5px;
+        }
+
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .legend-available {
+            background-color: #f0f0f0;
+            border: 1px solid #999;
+        }
+
+        .legend-selected {
+            background-color: #28a745;
+        }
+
+        .legend-occupied {
+            background-color: #dc3545;
+        }
+
+        .swiper-container {
+            margin: 20px 0;
+            padding: 20px 0;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+            }
+
+            .card img {
+                height: 300px;
+                object-fit: cover;
+            }
+
+        .movie-info {
+            padding: 10px;
+        }
+
+        #movie-selection {
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .carousel-inner img {
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-3">
+        <button id="toggleDarkMode" class="btn btn-dark mode-toggle">
+            <i class="fas fa-moon"></i> Chuyển chế độ
+        </button>
+
+        <div class="container mt-4">
+            <!-- Hero Banner -->
+            <div class="section">
+                <h2 class="text-center mb-4">PHIM HOT</h2>
+                <div id="imageSlider" class="carousel slide" data-bs-ride="carousel">
+                    <!-- Indicators -->
+                    <div class="carousel-indicators">
+                        @for (var i = 0; i < Model.Count; i++)
+                        {
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></button>
+                        }
+                    </div>
+
+                    <!-- Slides -->
+                    <div class="carousel-inner rounded">
+                        @for (var i = 0; i < Model.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Model[i].PosterUrl" class="d-block w-100" alt="Phim @i">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>@Model[i].Title</h3>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imageSlider" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imageSlider" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Movie Selection -->
+            <div class="section" id="movie-selection">
+                <h2 class="text-center mb-4">PHIM ĐANG CHIẾU</h2>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        @foreach (var item in Model)
+                        {
+                            <div class="swiper-slide">
+                                <div class="card">
+                                    <img src="@item.PosterUrl" class="card-img-top" alt="@item.Title">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Title</h5>
+                                        <p class="card-text"><small class="text-muted"><i class="fas fa-clock"></i> 120 phút</small></p>
+                                        <button class="btn btn-primary btn-sm select-movie" data-movie-id="@item.Id">Chọn</button>
+                                        <a href="@Url.Action("Details", "Movie", new { id = item.Id })" class="btn btn-primary">Xem chi tiết</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+
+            <!-- Seat Selection -->
+            <div class="section" id="seat-selection">
+                <h2 class="text-center mb-4">Chọn ghế</h2>
+
+                <div id="screening-time" class="text-center mb-4">
+                    <h5>Chọn suất chiếu:</h5>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary">10:00</button>
+                        <button type="button" class="btn btn-outline-primary">13:30</button>
+                        <button type="button" class="btn btn-outline-primary">16:00</button>
+                        <button type="button" class="btn btn-outline-primary">19:30</button>
+                        <button type="button" class="btn btn-outline-primary">22:00</button>
+                    </div>
+                </div>
+
+                <div class="text-center mb-4">
+                    <p>Màn hình</p>
+                    <div class="screen"></div>
+                </div>
+
+                <div class="seat-legend">
+                    <div class="legend-item">
+                        <div class="legend-box legend-available"></div>
+                        <span>Ghế trống</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box legend-selected"></div>
+                        <span>Ghế đã chọn</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box legend-occupied"></div>
+                        <span>Ghế đã đặt</span>
+                    </div>
+                </div>
+
+                <div id="seat-container" class="text-center">
+                    <div class="row">
+                        <button class="seat">A1</button>
+                        <button class="seat">A2</button>
+                        <button class="seat">A3</button>
+                        <button class="seat">A4</button>
+                        <button class="seat">A5</button>
+                        <button class="seat">A6</button>
+                        <button class="seat">A7</button>
+                        <button class="seat">A8</button>
+                    </div>
+                    <div class="row">
+                        <button class="seat">B1</button>
+                        <button class="seat">B2</button>
+                        <button class="seat">B3</button>
+                        <button class="seat">B4</button>
+                        <button class="seat">B5</button>
+                        <button class="seat">B6</button>
+                        <button class="seat">B7</button>
+                        <button class="seat">B8</button>
+                    </div>
+                    <div class="row">
+                        <button class="seat">C1</button>
+                        <button class="seat">C2</button>
+                        <button class="seat">C3</button>
+                        <button class="seat">C4</button>
+                        <button class="seat">C5</button>
+                        <button class="seat">C6</button>
+                        <button class="seat">C7</button>
+                        <button class="seat">C8</button>
+                    </div>
+                    <div class="row">
+                        <button class="seat">D1</button>
+                        <button class="seat">D2</button>
+                        <button class="seat">D3</button>
+                        <button class="seat">D4</button>
+                        <button class="seat">D5</button>
+                        <button class="seat">D6</button>
+                        <button class="seat">D7</button>
+                        <button class="seat">D8</button>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Thông tin đặt vé</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>Phim: <span id="selectedMovie">Chưa chọn</span></p>
+                                <p>Suất chiếu: <span id="selectedTime">Chưa chọn</span></p>
+                                <p>Ghế đã chọn: <span id="selectedSeats">Chưa chọn</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p>Đơn giá: 50.000 VNĐ/vé</p>
+                                <p>Số lượng: <span id="ticketCount">0</span> vé</p>
+                                <p>Tổng tiền: <span id="totalPrice">0</span> VNĐ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <form id="paymentForm" action="/Payment/Process" method="post">
+                        <input type="hidden" id="hiddenSeats" name="selectedSeats" value="">
+                        <input type="hidden" id="hiddenAmount" name="amount" value="0">
+                        <button id="checkout" class="btn btn-success btn-lg">Xác nhận thanh toán</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white text-center py-4 mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>CineTicket</h5>
+                        <p>Hệ thống đặt vé xem phim trực tuyến hàng đầu Việt Nam</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Liên kết</h5>
+                        <p>
+                            <a href="/Home/Privacy" class="text-white">Chính sách bảo mật</a><br>
+                            <a href="/Home/About" class="text-white">Về chúng tôi</a><br>
+                            <a href="/Home/Contact" class="text-white">Liên hệ</a>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Kết nối với chúng tôi</h5>
+                        <div class="mt-3">
+                            <a href="https://www.facebook.com/lamhankhiem" target="_blank" class="text-white mx-2"><i class="fab fa-facebook fa-2x"></i></a>
+                            <a href="https://www.instagram.com" class="text-white mx-2"><i class="fab fa-instagram fa-2x"></i></a>
+                            <a href="https://www.twitter.com" class="text-white mx-2"><i class="fab fa-twitter fa-2x"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <p>&copy; 2025 CineTicket. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script>
+                // Initialize Swiper
+                var swiper = new Swiper('.swiper-container', {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        640: {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        768: {
+                            slidesPerView: 3,
+                            spaceBetween: 30,
+                        },
+                        1024: {
+                            slidesPerView: 4,
+                            spaceBetween: 40,
+                        },
+                    }
+                });
+
+                // Set a few random seats as occupied
+                document.addEventListener('DOMContentLoaded', function() {
+                    const seats = document.querySelectorAll('.seat');
+                    const occupiedSeats = ['A3', 'A7', 'B2', 'B6', 'C4', 'D1', 'D5'];
+
+                    seats.forEach(seat => {
+                        if (occupiedSeats.includes(seat.innerText)) {
+                            seat.classList.add('occupied');
+                            seat.style.backgroundColor = '#dc3545';
+                            seat.style.color = 'white';
+                            seat.disabled = true;
+                        }
+                    });
+                });
+
+                // Seat selection
+                const seatPrice = 50000; // Giá mỗi ghế
+                let selectedSeats = [];
+
+                document.querySelectorAll(".seat").forEach(seat => {
+                    if (!seat.disabled) {
+                        seat.addEventListener("click", function() {
+                            if (this.classList.contains("selected")) {
+                                this.classList.remove("selected");
+                                selectedSeats = selectedSeats.filter(s => s !== this.innerText);
+                            } else {
+                                this.classList.add("selected");
+                                selectedSeats.push(this.innerText);
+                            }
+
+                            document.getElementById("selectedSeats").innerText = selectedSeats.join(", ") || "Chưa chọn";
+                            document.getElementById("ticketCount").innerText = selectedSeats.length;
+                            document.getElementById("totalPrice").innerText = (selectedSeats.length * seatPrice).toLocaleString() + " VNĐ";
+                        });
+                    }
+                });
+
+                // Screening time selection
+                document.querySelectorAll("#screening-time .btn").forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        document.querySelectorAll("#screening-time .btn").forEach(b => b.classList.remove("active"));
+                        this.classList.add("active");
+                        document.getElementById("selectedTime").innerText = this.innerText;
+                    });
+                });
+
+                // Movie selection
+                document.querySelectorAll(".select-movie").forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        const movieTitle = this.closest('.card').querySelector('.card-title').innerText;
+                        document.getElementById("selectedMovie").innerText = movieTitle;
+                        // Scroll to seat selection
+                        document.getElementById("seat-selection").scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+
+                // Checkout
+                document.getElementById("checkout").addEventListener("click", function(e) {
+                    if (selectedSeats.length === 0) {
+                        e.preventDefault();
+                        alert("Vui lòng chọn ghế trước khi thanh toán!");
+                        return;
+                    }
+
+                    if (document.getElementById("selectedMovie").innerText === "Chưa chọn") {
+                        e.preventDefault();
+                        alert("Vui lòng chọn phim!");
+                        return;
+                    }
+
+                    if (document.getElementById("selectedTime").innerText === "Chưa chọn") {
+                        e.preventDefault();
+                        alert("Vui lòng chọn suất chiếu!");
+                        return;
+                    }
+
+                    const confirmation = confirm(`Xác nhận đặt ${selectedSeats.length} vé?
+        Phim: ${document.getElementById("selectedMovie").innerText}
+        Suất chiếu: ${document.getElementById("selectedTime").innerText}
+        Ghế: ${selectedSeats.join(", ")}
+        Tổng tiền: ${(selectedSeats.length * seatPrice).toLocaleString()} VNĐ`);
+
+                    if (confirmation) {
+                        document.getElementById("hiddenSeats").value = selectedSeats.join(",");
+                        document.getElementById("hiddenAmount").value = selectedSeats.length * seatPrice;
+                        // Form submission will happen naturally
+                    } else {
+                        e.preventDefault();
+                    }
+                });
+
+                // Dark mode toggle
+                document.getElementById("toggleDarkMode").addEventListener("click", function() {
+                    document.body.classList.toggle("dark-mode");
+                    const icon = this.querySelector('i');
+                    if (document.body.classList.contains("dark-mode")) {
+                        // this.innerText = " Chế độ sáng";
+                        this.classList.remove("btn-dark");
+                        this.classList.add("btn-light");
+                        icon.classList.remove("fa-moon");
+                        icon.classList.add("fa-sun");
+                        this.prepend(icon);
+                    } else {
+                        // this.innerText = " Chuyển chế độ";
+                        this.classList.remove("btn-light");
+                        this.classList.add("btn-dark");
+                        icon.classList.remove("fa-sun");
+                        icon.classList.add("fa-moon");
+                        this.prepend(icon);
+                    }
+                });
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+﻿@model Showtimes
+
+<h2>Đặt vé cho phim: @Model.Movie.Title</h2>
+<form method="post">
+    <label>Chọn ghế:</label>
+    <input type="text" name="seatNumber" required />
+    <button type="submit">Đặt vé</button>
+</form>

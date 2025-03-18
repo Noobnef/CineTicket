@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Ghế Xem Phim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+
+        .cinema-container {
+            width: 50%;
+            margin: auto;
+        }
+
+        .screen {
+            background-color: #fff;
+            height: 50px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .seats-container {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .seat {
+            width: 40px;
+            height: 40px;
+            background-color: gray;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+            .seat.selected {
+                background-color: green;
+            }
+
+            .seat.occupied {
+                background-color: red;
+                cursor: not-allowed;
+            }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="cinema-container">
+        <h2>Chọn ghế xem phim</h2>
+        <div class="screen"></div>
+        <div class="seats-container" id="seats-container"></div>
+        <p>Số ghế đã chọn: <span id="selected-seats">0</span></p>
+        <p>Tổng tiền: <span id="total-price">0</span> VND</p>
+        <button id="confirm-button">Xác nhận</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const seatContainer = document.getElementById("seats-container");
+            const selectedSeatsCount = document.getElementById("selected-seats");
+            const totalPrice = document.getElementById("total-price");
+            const confirmButton = document.getElementById("confirm-button");
+            const ticketPrice = 100000;
+            const rows = 5, cols = 8;
+            let selectedSeats = [];
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const seat = document.createElement("div");
+                    seat.classList.add("seat");
+
+                    // Tạo nhãn ghế theo hàng A, B, C...
+                    const seatLabel = String.fromCharCode(65 + i) + (j + 1);
+                    seat.setAttribute("data-seat", seatLabel);
+                    seat.innerText = seatLabel; // Hiển thị tên ghế trên giao diện
+
+                    seat.addEventListener("click", () => {
+                        if (!seat.classList.contains("occupied")) {
+                            seat.classList.toggle("selected");
+                            updateSelection();
+                        }
+                    });
+
+                    seatContainer.appendChild(seat);
+                }
+            }
+
+            function updateSelection() {
+                selectedSeats = [...document.querySelectorAll(".seat.selected")];
+                selectedSeatsCount.innerText = selectedSeats.length;
+                totalPrice.innerText = selectedSeats.length * ticketPrice;
+            }
+
+            confirmButton.addEventListener("click", () => {
+                if (selectedSeats.length > 0) {
+                    const seatNames = selectedSeats.map(seat => seat.getAttribute("data-seat")).join(", ");
+                    alert(`Bạn đã đặt ${selectedSeats.length} ghế: ${seatNames} với tổng giá ${totalPrice.innerText} VND`);
+                } else {
+                    alert("Vui lòng chọn ít nhất một ghế.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

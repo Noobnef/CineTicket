@@ -1,0 +1,90 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.swiper-container {
+    width: 80%;
+    height: 400px;
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 250px;
+}
+
+    .card img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+.card {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 10px;
+}
+
+    .card img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .card h3 {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+:root {
+    --bg-color: white;
+    --text-color: black;
+}
+
+.dark-mode {
+    --bg-color: #121212;
+    --text-color: white;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    background-color: #ddd;
+    border: 1px solid #666;
+    cursor: pointer;
+}
+
+    .seat.selected {
+        background-color: green;
+        color: white;
+    }
+
+.carousel-item img {
+    height: 400px;
+    object-fit: cover;
+}
+
