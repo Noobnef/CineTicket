@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Ghế</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .screen {
+            background: #444;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .seat-container {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .seat {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+            .seat.selected {
+                background-color: #6c5ce7;
+                color: white;
+            }
+
+            .seat.occupied {
+                background-color: #d63031;
+                cursor: not-allowed;
+            }
+
+        .legend {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+            .legend span {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chọn Ghế</h2>
+    <div class="screen">Màn Hình</div>
+    <div class="seat-container" id="seat-container">
+        <!-- Ghế sẽ được tạo động ở đây -->
+    </div>
+
+    <div class="legend">
+        <span><div class="seat"></div> Ghế trống</span>
+        <span><div class="seat selected"></div> Đang chọn</span>
+        <span><div class="seat occupied"></div> Đã đặt</span>
+    </div>
+
+    <div class="total">Tổng tiền: <span id="total-price">0</span> VND</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const seatContainer = document.getElementById("seat-container");
+            const totalPriceElement = document.getElementById("total-price");
+            const seatPrice = 50000; // Giá mỗi ghế
+
+            const seats = [];
+            for (let i = 0; i < 40; i++) {
+                seats.push({ id: i, occupied: Math.random() < 0.2 });
+            }
+
+            seats.forEach(seat => {
+                const seatElement = document.createElement("div");
+                seatElement.classList.add("seat");
+                if (seat.occupied) {
+                    seatElement.classList.add("occupied");
+                }
+                seatElement.addEventListener("click", () => {
+                    if (!seat.occupied) {
+                        seatElement.classList.toggle("selected");
+                        updateTotal();
+                    }
+                });
+                seatContainer.appendChild(seatElement);
+            });
+
+            function updateTotal() {
+                const selectedSeats = document.querySelectorAll(".seat.selected").length;
+                totalPriceElement.innerText = selectedSeats * seatPrice;
+            }
+        });
+    </script>
+</body>
+</html>
