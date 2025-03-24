@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 public class TicketController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly EmailService _emailService; // Inject EmailService
 
     public TicketController(ApplicationDbContext context) { _context = context; }
 

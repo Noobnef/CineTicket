@@ -39,18 +39,3 @@ body {
     .navbar .nav-link {
         color: #000 !important;
     }
-
-/* Khi bật Dark Mode */
-.dark-mode .navbar {
-    background-color: #222; /* Màu nền tối */
-    color: #fff;
-    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
-}
-
-    .dark-mode .navbar .nav-link {
-        color: #fff !important; /* Màu chữ trắng */
-    }
-
-        .dark-mode .navbar .nav-link:hover {
-            color: #0d6efd !important; /* Màu xanh khi hover */
-        }

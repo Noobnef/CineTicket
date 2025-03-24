@@ -1,4 +1,33 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.querySelector('.mode-toggle');
+    const darkModeSheet = document.getElementById("darkModeStylesheet");
+    const icon = toggleBtn?.querySelector('i');
 
-// Write your JavaScript code.
+    function enableDarkMode() {
+        darkModeSheet.disabled = false;
+        toggleBtn.classList.remove('btn-dark');
+        toggleBtn.classList.add('btn-light');
+        icon?.classList.replace('fa-moon', 'fa-sun');
+        localStorage.setItem("darkMode", "enabled");
+    }
+
+    function disableDarkMode() {
+        darkModeSheet.disabled = true;
+        toggleBtn.classList.remove('btn-light');
+        toggleBtn.classList.add('btn-dark');
+        icon?.classList.replace('fa-sun', 'fa-moon');
+        localStorage.setItem("darkMode", "disabled");
+    }
+
+    toggleBtn?.addEventListener("click", () => {
+        const isDark = !darkModeSheet.disabled;
+        isDark ? disableDarkMode() : enableDarkMode();
+    });
+
+    // Load trạng thái đã lưu
+    if (localStorage.getItem("darkMode") === "enabled") {
+        enableDarkMode();
+    } else {
+        disableDarkMode();
+    }
+});
