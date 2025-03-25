@@ -1,0 +1,439 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+
+/* === ROOT VARIABLES === */
+:root {
+    --mainColor: crimson;
+    --black: #000;
+    --white: #fff;
+    --whiteSmoke: #c4c3ca;
+    --shadow: 0 4px 8px rgba(21, 21, 21, 0.2);
+}
+
+/* === GLOBAL RESET === */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    background-color: var(--black);
+    color: var(--white);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.full-screen {
+    min-height: 100vh;
+    padding-top: 120px;
+}
+
+
+
+.text-center {
+    text-align: center;
+}
+
+/* === NAVIGATION BAR === */
+nav {
+    position: fixed;
+    width: 100%;
+    padding: 25px;
+    background-color: var(--black);
+    z-index: 999;
+}
+
+    nav .logo {
+        font-size: 32px;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+        nav .logo span {
+            color: var(--mainColor);
+        }
+
+    nav .menu-btn i {
+        display: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--white);
+    }
+
+    nav ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        nav ul li {
+            margin: 0 5px;
+        }
+
+            nav ul li a {
+                padding: 8px 15px;
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+
+                nav ul li a:hover,
+                nav ul li a.active {
+                    background-color: var(--white);
+                    color: var(--mainColor);
+                }
+
+/* === LEFT & RIGHT COLUMNS === */
+.left,
+.right {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 20px;
+}
+
+    .left .line {
+        width: 15%;
+        height: 2px;
+        background-color: var(--mainColor);
+        display: inline-block;
+    }
+
+    .left h2 {
+        margin-top: 25px;
+        font-size: 50px;
+        line-height: 1.1;
+    }
+
+        .left h2 span {
+            color: var(--mainColor);
+            font-size: 52px;
+        }
+
+    .left p {
+        color: var(--whiteSmoke);
+        font-size: 16px;
+        margin: 20px 0 10px;
+    }
+
+.social-media {
+    margin-top: 60px;
+}
+
+    .social-media a {
+        margin-right: 22px;
+        font-size: 22px;
+        transition: color 0.2s;
+    }
+
+        .social-media a:hover {
+            color: var(--mainColor);
+        }
+
+/* === BUTTON === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+    height: 44px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--white);
+    background-color: var(--mainColor);
+    border: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    box-shadow: 0 8px 24px rgba(228, 10, 57, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn:hover {
+        background-color: var(--white);
+        color: var(--mainColor);
+        box-shadow: 0 8px 24px rgba(138, 140, 146, 0.2);
+    }
+
+/* === FORM WRAPPER === */
+.form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.right h4 {
+    font-weight: 600;
+}
+
+.right h6 {
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+    .right h6 span {
+        padding: 0 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+/* === TOGGLE CHECKBOX === */
+input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox + label {
+    position: relative;
+    display: block;
+    width: 60px;
+    height: 16px;
+    margin: 10px auto;
+    background-color: var(--mainColor);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+    .checkbox + label::before {
+        content: '\f1e2';
+        font-family: 'Material Icons';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 36px;
+        height: 36px;
+        background-color: var(--white);
+        color: var(--mainColor);
+        border-radius: 50%;
+        font-size: 24px;
+        text-align: center;
+        line-height: 36px;
+        transition: all 0.5s ease;
+    }
+
+.checkbox:checked + label::before {
+    transform: translateX(44px) rotate(-270deg);
+}
+
+/* === LINK === */
+.link {
+    margin-top: 20px;
+    color: var(--whiteSmoke);
+    display: block;
+    text-align: center;
+}
+
+    .link:hover {
+        color: var(--mainColor);
+    }
+
+/* === 3D CARD WRAP === */
+.card-3d-wrap {
+    position: relative;
+    width: 400px;
+    max-width: 100%;
+    height: 400px;
+    margin-top: 60px;
+    perspective: 800px;
+    transform-style: preserve-3d;
+}
+
+.card-3d-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: transform 0.6s ease-out;
+    transform-style: preserve-3d;
+}
+
+.checkbox:checked ~ .card-3d-wrap .card-3d-wrapper {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 6px;
+    background-color: #1b1b1b;
+    background-image: url('https://i.postimg.cc/4dnZCH03/background.png');
+    background-position: bottom center;
+    background-size: 300%;
+    background-repeat: no-repeat;
+    transform-style: preserve-3d;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.center-wrap {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    padding: 0 35px;
+    transform: translate3d(0, -50%, 35px) perspective(100px);
+    z-index: 20;
+}
+
+/* === FORM INPUTS === */
+.heading {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.form-style {
+    width: 100%;
+    height: 48px;
+    padding: 13px 20px 13px 55px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    background-color: #242323;
+    color: var(--whiteSmoke);
+    box-shadow: var(--shadow);
+    outline: none;
+    letter-spacing: 0.5px;
+}
+
+    .form-style::placeholder {
+        color: var(--whiteSmoke);
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .form-style:focus::placeholder {
+        opacity: 0;
+    }
+
+.input-icon {
+    position: absolute;
+    top: 12px;
+    left: 18px;
+    font-size: 24px;
+    color: var(--mainColor);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+    nav .menu-btn i {
+        display: block;
+    }
+
+    nav ul {
+        position: fixed;
+        top: 85px;
+        left: -100%;
+        width: 100%;
+        height: 320px;
+        background-color: #1b1b1b;
+        text-align: center;
+        transition: left 0.3s ease;
+        display: block;
+    }
+
+    #click:checked ~ ul {
+        left: 0;
+    }
+
+    nav ul li {
+        margin: 20px 0;
+    }
+
+        nav ul li a {
+            display: block;
+            font-size: 20px;
+        }
+
+    .left h2 {
+        font-size: 40px;
+    }
+
+        .left h2 span {
+            font-size: 42px;
+        }
+
+    .left p {
+        font-size: 14px;
+    }
+
+    .card-3d-wrap {
+        width: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .left,
+    .right {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .left {
+        display: grid;
+        place-items: center;
+        order: 2;
+    }
+
+    .right {
+        order: 1;
+    }
+
+    .left h2 {
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .left h2 {
+        font-size: 28px;
+    }
+
+        .left h2 span {
+            font-size: 30px;
+        }
+
+    .card-3d-wrap {
+        width: 300px;
+    }
+}
