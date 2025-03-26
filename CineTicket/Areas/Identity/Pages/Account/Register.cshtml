@@ -63,43 +63,50 @@
                                     <!-- Mặt trước (có thể dẫn đến trang Login thật) -->
                                     <div class="card-front">
                                         <div class="center-wrap">
-                                            <h4 class="heading">Login</h4>
-                                            <a href="/Identity/Account/Login" class="btn">Go to Login</a>
+                                            <h4 class="heading">Đăng Nhập</h4>
+                                            <a href="/Identity/Account/Login" class="btn">Đến trang đăng nhập</a>
                                         </div>
                                     </div>
 
                                     <!-- Mặt sau: Form đăng ký -->
                                     <div class="card-back">
                                         <div class="center-wrap">
-                                            <h4 class="heading">Register</h4>
+                                            <h4 class="heading">Đăng Ký</h4>
                                             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                                                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
                                                 <div class="form-group">
-                                                    <input asp-for="Input.FullName" class="form-style" placeholder="Your Name" autocomplete="name" />
+                                                    <input asp-for="Input.FullName" class="form-style" placeholder="Họ Tên" autocomplete="name" />
                                                     <i class="input-icon material-icons">perm_identity</i>
                                                     <span asp-validation-for="Input.FullName" class="text-danger"></span>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <input asp-for="Input.Email" class="form-style" placeholder="Your Email" autocomplete="username" />
+                                                    <input asp-for="Input.Email" class="form-style" placeholder="Email" autocomplete="username" />
                                                     <i class="input-icon material-icons">alternate_email</i>
                                                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <input asp-for="Input.Password" class="form-style" placeholder="Your Password" autocomplete="new-password" />
+                                                    <input asp-for="Input.Password" class="form-style" placeholder="Mật Khẩu" autocomplete="new-password" />
                                                     <i class="input-icon material-icons">lock</i>
                                                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <input asp-for="Input.ConfirmPassword" class="form-style" placeholder="Confirm Password" autocomplete="new-password" />
+                                                    <input asp-for="Input.ConfirmPassword" class="form-style" placeholder="Nhập Lại Mật Khẩu" autocomplete="new-password" />
                                                     <i class="input-icon material-icons">lock</i>
                                                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                                                 </div>
 
-                                                <button id="registerSubmit" type="submit" class="btn">Submit</button>
+
+                                                <div class="form-group">
+													<select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
+                                                        <option disable selected>Chọn Quyền</option>
+													</select>
+                                                </div>
+
+                                                <button id="registerSubmit" type="submit" class="btn">Gửi</button>
                                             </form>
                                         </div>
                                     </div> <!-- /.card-back -->

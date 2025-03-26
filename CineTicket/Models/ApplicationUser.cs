@@ -14,5 +14,7 @@ namespace CineTicket.Models
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
+        [Required]
+        public string Role { get; set; }
     }
 }

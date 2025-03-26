@@ -1,0 +1,58 @@
+﻿:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #f4f6f7;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Inter', sans-serif;
+}
+
+.movie-details-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.movie-poster {
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+    .movie-poster:hover {
+        transform: scale(1.03);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+.movie-info-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    background-color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.movie-info-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.5rem;
+}
+
+.detail-row {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.btn-book {
+    background-color: var(--secondary-color);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-book:hover {
+        background-color: #2980b9;
+        transform: translateY(-3px);
+    }

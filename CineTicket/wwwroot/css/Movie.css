@@ -104,7 +104,14 @@
         height: 300px;
         object-fit: cover;
         transition: filter 0.3s;
+        overflow: hidden;
+        width: 100%; 
+        object-fit: cover;
     }
+.swiper-container {
+    overflow: hidden; /* Chặn ảnh bị tràn khỏi slider */
+}
+
 
 /* Dark mode cho ảnh (nếu dùng dark-mode.css riêng) */
 body.dark-mode .card img {

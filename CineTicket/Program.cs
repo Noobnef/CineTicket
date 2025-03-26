@@ -42,10 +42,23 @@ app.MapRazorPages();
 
 app.MapStaticAssets();
 
+//app.MapControllerRoute(
+//    name: "Admin",
+//    //pattern: "{area:exists}/{controller=Admin}/{action=Users}/{id?}"
+//    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+//);
+
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Movie}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Movie}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
 
 
 app.Run();

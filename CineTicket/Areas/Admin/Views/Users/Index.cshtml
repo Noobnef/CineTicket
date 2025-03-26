@@ -1,0 +1,32 @@
+﻿@model List<CineTicket.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "";
+}
+
+<h2>Quản lý tài khoản</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>
+                    <a href="/Admin/EditUser/@user.Id" class="btn btn-warning">Sửa</a>
+                    <a href="/Admin/DeleteUser/@user.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
