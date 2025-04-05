@@ -9,8 +9,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options) { }
 
     public DbSet<Movie> Movies { get; set; }
-
-    public DbSet<Tickets> Tickets { get; set; }
-    public DbSet<Showtimes> Showtimes { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<Showtime> Showtimes { get; set; }
     public DbSet<Poster> Posters { get; set; }
+    public DbSet<Seat> Seats { get; set; }
+
 }

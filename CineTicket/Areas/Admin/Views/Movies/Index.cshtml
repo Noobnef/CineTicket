@@ -1,5 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<CineTicket.Models.Movie>
+
+<h2>Quản lý phim</h2>
+@* <a asp-area="Admin" asp-action="AddMovie" class="btn btn-primary">Thêm phim mới</a> *@
+<a href="/Admin/Movies/Add" class="btn btn-primary">Thêm phim mới</a>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên phim</th>
+            <th>Thể loại</th>
+            <th>Thời lượng</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td>@movie.Title</td>
+                <td>@movie.Genre</td>
+                <td>@movie.Duration phút</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

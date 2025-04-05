@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CineTicket.Models.Showtime>
+@{
+    ViewData["Title"] = "Danh sách suất chiếu";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Add" class="btn btn-primary mb-3">Thêm suất chiếu</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Thời gian</th>
+            <th>Phim</th>
+            <th>Phòng</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.Movie?.Title</td>
+                <td>@item.Room?.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

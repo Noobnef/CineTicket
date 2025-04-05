@@ -1,0 +1,33 @@
+﻿@model CineTicket.Models.Showtime
+@{
+    ViewData["Title"] = "Thêm suất chiếu";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label asp-for="StartTime"></label>
+        <input asp-for="StartTime" class="form-control" type="datetime-local" />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MovieId">Phim</label>
+        <select asp-for="MovieId" class="form-control" asp-items="ViewBag.Movies"></select>
+        <span asp-validation-for="MovieId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RoomId">Phòng</label>
+        <select asp-for="RoomId" class="form-control" asp-items="ViewBag.Rooms"></select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

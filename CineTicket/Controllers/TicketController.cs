@@ -19,7 +19,7 @@ public class TicketController : Controller
     [HttpPost]
     public IActionResult Book(int showtimeId, string seatNumber)
     {
-        var ticket = new Tickets { ShowtimeId = showtimeId, SeatNumber = seatNumber };
+        var ticket = new Ticket { ShowtimeId = showtimeId, SeatNumber = seatNumber };
         _context.Tickets.Add(ticket);
         _context.SaveChanges();
 

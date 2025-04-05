@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTicket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250403125758_AddNewDatabase")]
+    partial class AddNewDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,7 +227,7 @@ namespace CineTicket.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
@@ -237,6 +240,31 @@ namespace CineTicket.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("Showtimes");
+                });
+
+            modelBuilder.Entity("CineTicket.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SeatNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShowtimeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShowtimeId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -372,37 +400,6 @@ namespace CineTicket.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Ticket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("SeatNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ShowtimeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShowtimeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tickets");
-                });
-
             modelBuilder.Entity("CineTicket.Models.Seat", b =>
                 {
                     b.HasOne("CineTicket.Models.Room", "Room")
@@ -422,15 +419,22 @@ namespace CineTicket.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CineTicket.Models.Room", "Room")
+                    b.HasOne("CineTicket.Models.Room", null)
                         .WithMany("Showtimes")
-                        .HasForeignKey("RoomId")
+                        .HasForeignKey("RoomId");
+
+                    b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("CineTicket.Models.Ticket", b =>
+                {
+                    b.HasOne("CineTicket.Models.Showtime", "Showtimes")
+                        .WithMany()
+                        .HasForeignKey("ShowtimeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Movie");
-
-                    b.Navigation("Room");
+                    b.Navigation("Showtimes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -482,25 +486,6 @@ namespace CineTicket.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ticket", b =>
-                {
-                    b.HasOne("CineTicket.Models.Showtime", "Showtimes")
-                        .WithMany()
-                        .HasForeignKey("ShowtimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CineTicket.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Showtimes");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CineTicket.Models.Room", b =>
