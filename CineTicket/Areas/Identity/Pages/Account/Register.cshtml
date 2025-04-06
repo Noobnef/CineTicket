@@ -2,7 +2,7 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
-    Layout = null; // hoặc "_Layout" nếu bạn muốn dùng layout chính
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -11,20 +11,24 @@
     <meta charset="utf-8" />
     <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="~/css/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+	<!-- CSS -->
 	<link href="~/css/resgitry.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 <body>
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="logo">Cine<span>Ticket</span></div>
-                <input type="checkbox" id="click">
+
+                <input type="checkbox" id="click" />
                 <label for="click" class="menu-btn">
                     <i class="material-icons">menu</i>
                 </label>
+
                 <ul>
                     <li><a href="/" class="active">Home</a></li>
                     <li><a href="#">Movies</a></li>
@@ -35,13 +39,17 @@
         </div>
     </nav>
 
+    <!-- MAIN SECTION -->
     <section>
         <div class="container">
             <div class="row full-screen align-items-center">
+
+                <!-- LEFT -->
                 <div class="left">
                     <span class="line"></span>
                     <h2>Chào mừng đến với<br><span>CineTicket</span></h2>
                     <p>Đăng ký tài khoản để bắt đầu đặt vé xem phim ngay!</p>
+
                     <div class="social-media">
                         <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
                         <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
@@ -51,76 +59,114 @@
                     </div>
                 </div>
 
+                <!-- RIGHT -->
                 <div class="right">
                     <div class="form">
                         <div class="text-center">
-                            <h6><span>Login</span> <span>Register</span></h6>
+                            <h6>
+                                <span class="login-title">Login</span>
+                                <span>Register</span>
+                            </h6>
+
+                            <!-- checkbox + label tạo icon mũi tên lật thẻ -->
                             <input type="checkbox" class="checkbox" id="reg-log" checked />
-                            <label for="reg-log"></label>
+                            <label for="reg-log" class="flip-arrow"></label>
 
                             <div class="card-3d-wrap">
                                 <div class="card-3d-wrapper">
-                                    <!-- Mặt trước (có thể dẫn đến trang Login thật) -->
-                                    <div class="card-front">
-                                        <div class="center-wrap">
-                                            <h4 class="heading">Đăng Nhập</h4>
-                                            <a href="/Identity/Account/Login" class="btn">Đến trang đăng nhập</a>
-                                        </div>
-                                    </div>
-
-                                    <!-- Mặt sau: Form đăng ký -->
+                                    <!-- MẶT SAU: FORM ĐĂNG KÝ -->
                                     <div class="card-back">
                                         <div class="center-wrap">
                                             <h4 class="heading">Đăng Ký</h4>
-                                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-                                                <div class="form-group">
-                                                    <input asp-for="Input.FullName" class="form-style" placeholder="Họ Tên" autocomplete="name" />
-                                                    <i class="input-icon material-icons">perm_identity</i>
-                                                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                                            <form id="registerForm"
+                                                  asp-route-returnUrl="@Model.ReturnUrl"
+                                                  method="post">
+
+                                                <div asp-validation-summary="ModelOnly"
+                                                     class="text-danger"
+                                                     role="alert"></div>
+
+                                                <!-- HỌ TÊN – không icon -->
+                                                <div class="form-group no-icon">
+                                                    <input asp-for="Input.FullName"
+                                                           class="form-style"
+                                                           placeholder="Họ Tên"
+                                                           autocomplete="name" />
+                                                    <span asp-validation-for="Input.FullName"
+                                                          class="text-danger"></span>
                                                 </div>
 
+                                                <!-- EMAIL -->
                                                 <div class="form-group">
-                                                    <input asp-for="Input.Email" class="form-style" placeholder="Email" autocomplete="username" />
+                                                    <input asp-for="Input.Email"
+                                                           class="form-style"
+                                                           placeholder="Email"
+                                                           autocomplete="username" />
                                                     <i class="input-icon material-icons">alternate_email</i>
-                                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                                    <span asp-validation-for="Input.Email"
+                                                          class="text-danger"></span>
                                                 </div>
 
+                                                <!-- PASSWORD -->
                                                 <div class="form-group">
-                                                    <input asp-for="Input.Password" class="form-style" placeholder="Mật Khẩu" autocomplete="new-password" />
+                                                    <input asp-for="Input.Password"
+                                                           class="form-style"
+                                                           placeholder="Mật Khẩu"
+                                                           autocomplete="new-password" />
                                                     <i class="input-icon material-icons">lock</i>
-                                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                                    <span asp-validation-for="Input.Password"
+                                                          class="text-danger"></span>
                                                 </div>
 
+                                                <!-- CONFIRM PASSWORD -->
                                                 <div class="form-group">
-                                                    <input asp-for="Input.ConfirmPassword" class="form-style" placeholder="Nhập Lại Mật Khẩu" autocomplete="new-password" />
+                                                    <input asp-for="Input.ConfirmPassword"
+                                                           class="form-style"
+                                                           placeholder="Nhập Lại Mật Khẩu"
+                                                           autocomplete="new-password" />
                                                     <i class="input-icon material-icons">lock</i>
-                                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                                    <span asp-validation-for="Input.ConfirmPassword"
+                                                          class="text-danger"></span>
                                                 </div>
 
-
+                                                <!-- ROLE -->
                                                 <div class="form-group">
-													<select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
-                                                        <option disable selected>Chọn Quyền</option>
-													</select>
+                                                    <select asp-for="Input.Role"
+                                                            asp-items="Model.Input.RoleList"
+                                                            class="form-control">
+                                                        <option disabled selected>Chọn Quyền</option>
+                                                    </select>
                                                 </div>
 
-                                                <button id="registerSubmit" type="submit" class="btn">Gửi</button>
+                                                <button id="registerSubmit"
+                                                        type="submit"
+                                                        class="btn">
+                                                    Đăng Kí
+                                                </button>
                                             </form>
                                         </div>
-                                    </div> <!-- /.card-back -->
-                                </div> <!-- /.card-3d-wrapper -->
-                            </div> <!-- /.card-3d-wrap -->
+                                    </div><!-- /.card-back -->
+                                </div><!-- /.card-3d-wrapper -->
+                            </div><!-- /.card-3d-wrap -->
                         </div>
-                    </div> <!-- /.form -->
-                </div> <!-- /.right -->
+                    </div><!-- /.form -->
+                </div><!-- /.right -->
             </div>
         </div>
     </section>
 
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <!-- Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const goLogin = e => {
+            e.preventDefault();
+            window.location.href = '/Identity/Account/Login';
+        };
+        document.querySelector('.login-title').addEventListener('click', goLogin);
+        document.querySelector('.flip-arrow' ).addEventListener('click', goLogin);
+        document.getElementById('goto-login').addEventListener('click', goLogin);
+    </script>
 </body>
 </html>
