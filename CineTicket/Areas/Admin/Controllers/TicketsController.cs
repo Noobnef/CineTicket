@@ -17,11 +17,14 @@ namespace CineTicket.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var tickets = _context.Tickets
-                                  .Include(t => t.Showtimes)   // mỗi vé thuộc 1 suất chiếu
+                                  .Include(t => t.Showtimes)
                                       .ThenInclude(s => s.Movie)
+                                  .Include(t => t.User)       // Thêm dòng này để nạp User
                                   .ToList();
+
             return View(tickets);
         }
+
 
         // ========== Thêm ==========
         public IActionResult Add()
