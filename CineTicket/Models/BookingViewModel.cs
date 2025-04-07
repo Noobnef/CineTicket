@@ -20,6 +20,8 @@ namespace CineTicket.Models
         public string PaymentMethod { get; set; }
 
         public string SeatNumbers { get; set; } // Ghế dạng "A1,B2"
+        public List<string> AlreadyBookedSeats { get; set; } = new List<string>();
+
     }
 
 }

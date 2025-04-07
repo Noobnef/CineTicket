@@ -1,0 +1,46 @@
+﻿@model IEnumerable<CineTicket.Models.Ticket>
+@{
+    ViewData["Title"] = "Danh sách vé";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Phim / Suất</th>
+            <th>Ghế</th>
+            <th>Giá</th>
+            <th>Người đặt</th>
+            <th class="text-center" style="width:140px">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>
+                    @t.Showtimes?.Movie?.Title<br />
+                    <small class="text-muted">
+                        @t.Showtimes?.StartTime.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </td>
+                <td>@t.SeatNumber</td>
+                <td>@t.Price.ToString("N0") đ</td>
+                <td>@t.User?.Email</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@t.Id" class="btn btn-sm btn-warning me-1">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@t.Id" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Xoá vé này?')">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Add" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Thêm vé</a>

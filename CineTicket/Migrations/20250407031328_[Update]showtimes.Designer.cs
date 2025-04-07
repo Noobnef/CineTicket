@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTicket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250407031328_[Update]showtimes")]
+    partial class Updateshowtimes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +184,6 @@ namespace CineTicket.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SeatCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketPrice")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -420,7 +420,7 @@ namespace CineTicket.Migrations
             modelBuilder.Entity("CineTicket.Models.Showtime", b =>
                 {
                     b.HasOne("CineTicket.Models.Movie", "Movie")
-                        .WithMany()
+                        .WithMany("Showtimes")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -504,6 +504,11 @@ namespace CineTicket.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CineTicket.Models.Movie", b =>
+                {
+                    b.Navigation("Showtimes");
                 });
 
             modelBuilder.Entity("CineTicket.Models.Room", b =>
