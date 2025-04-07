@@ -1,0 +1,20 @@
+﻿@model ChooseShowtimeViewModel
+@{
+    ViewData["Title"] = "Chọn suất chiếu cho " + Model.MovieTitle;
+}
+
+<h2>Chọn Suất Chiếu</h2>
+<ul>
+    @foreach (var s in Model.Showtimes)
+    {
+        <li>
+            @s.StartTime.ToString("dd/MM/yyyy HH:mm")
+            (<a asp-controller="Booking"
+                asp-action="Index"
+                asp-route-movieId="@Model.MovieId"
+                asp-route-showtimeId="@s.Id">
+                Đặt vé
+            </a>)
+        </li>
+    }
+</ul>

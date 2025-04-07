@@ -14,7 +14,7 @@ public class BookingController : Controller
         _userManager = userManager;
     }
 
-    public IActionResult Index(int movieId)
+    public IActionResult Index(int movieId, int? showtimeId)
     {
         var movie = _context.Movies.FirstOrDefault(m => m.Id == movieId);
         if (movie == null)
@@ -22,22 +22,49 @@ public class BookingController : Controller
             return NotFound();
         }
 
-        var showtime = _context.Showtimes.FirstOrDefault(s => s.MovieId == movieId);
-        if (showtime == null)
+        // Nếu chưa truyền showtimeId (chưa chọn suất chiếu)
+        // -> Lấy danh sách suất chiếu cho phim này để người dùng chọn
+        if (!showtimeId.HasValue)
         {
-            return BadRequest("Không có suất chiếu cho phim này.");
+            var showtimes = _context.Showtimes
+                .Where(s => s.MovieId == movieId)
+                .OrderBy(s => s.StartTime)
+                .ToList();
+
+            if (!showtimes.Any())
+            {
+                return BadRequest("Không có suất chiếu cho phim này.");
+            }
+
+            // Trả về View cho phép người dùng chọn suất chiếu
+            return View("ChooseShowtime", new ChooseShowtimeViewModel
+            {
+                MovieId = movie.Id,
+                MovieTitle = movie.Title,
+                Showtimes = showtimes
+            });
         }
 
+        // Nếu đã có showtimeId => Lấy suất chiếu để chuẩn bị đặt vé
+        var selectedShowtime = _context.Showtimes
+            .FirstOrDefault(s => s.Id == showtimeId.Value && s.MovieId == movieId);
+        if (selectedShowtime == null)
+        {
+            return BadRequest("Suất chiếu không hợp lệ.");
+        }
+
+        // Tạo ViewModel booking
         var booking = new BookingViewModel
         {
             MovieId = movie.Id,
             MovieTitle = movie.Title,
             TicketPrice = 100000,
-            ShowtimeId = showtime.Id // Gán suất chiếu có thật!
+            ShowtimeId = selectedShowtime.Id
         };
 
         return View(booking);
     }
+
 
 
     [HttpPost]
