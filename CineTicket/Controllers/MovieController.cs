@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 public class MovieController : Controller
 {
     private readonly ApplicationDbContext _context;
-    public MovieController(ApplicationDbContext context) { _context = context; }
+    public MovieController(ApplicationDbContext context) 
+    { 
+        _context = context; 
+    }
 
     public IActionResult Index()
     {
@@ -20,6 +24,23 @@ public class MovieController : Controller
         }
         return View(movie);
     }
+    [HttpGet]
+    [HttpGet]
+    public async Task<IActionResult> Search(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+            return Json(new List<object>());
 
+        var results = await _context.Movies
+            .Where(m => EF.Functions.Like(m.Title, $"%{term}%"))
+            .Select(m => new
+            {
+                label = m.Title,   // Tên hiển thị
+                value = m.Id       // Giá trị dùng để chuyển trang
+            })
+            .Take(10)
+            .ToListAsync();
 
+        return Json(results);
+    }
 }
