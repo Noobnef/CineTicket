@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CineTicket.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 public class BookingController : Controller
@@ -19,11 +20,10 @@ public class BookingController : Controller
         var movie = _context.Movies.FirstOrDefault(m => m.Id == movieId);
         if (movie == null)
         {
-            return NotFound();
+            return NotFound("Không tìm thấy phim.");
         }
 
-        // Nếu chưa truyền showtimeId (chưa chọn suất chiếu)
-        // -> Lấy danh sách suất chiếu cho phim này để người dùng chọn
+        // Nếu chưa chọn suất chiếu => hiển thị trang ChooseShowtime
         if (!showtimeId.HasValue)
         {
             var showtimes = _context.Showtimes
@@ -33,7 +33,7 @@ public class BookingController : Controller
 
             if (!showtimes.Any())
             {
-                return BadRequest("Không có suất chiếu cho phim này.");
+                return BadRequest("Phim này chưa có suất chiếu.");
             }
 
             // Trả về View cho phép người dùng chọn suất chiếu
@@ -47,50 +47,70 @@ public class BookingController : Controller
 
         // Nếu đã có showtimeId => Lấy suất chiếu để chuẩn bị đặt vé
         var selectedShowtime = _context.Showtimes
+            .Include(s => s.Room) // cần Include để lấy Room
             .FirstOrDefault(s => s.Id == showtimeId.Value && s.MovieId == movieId);
         if (selectedShowtime == null)
         {
             return BadRequest("Suất chiếu không hợp lệ.");
         }
 
-        // Tạo ViewModel booking
+        // Lấy các ghế đã đặt cho suất chiếu này
+        var bookedSeats = _context.Tickets
+            .Where(t => t.ShowtimeId == selectedShowtime.Id)
+            .Select(t => t.SeatNumber)
+            .ToList();
+
+        // Tạo ViewModel
         var booking = new BookingViewModel
         {
             MovieId = movie.Id,
             MovieTitle = movie.Title,
-            TicketPrice = 100000,
-            ShowtimeId = selectedShowtime.Id
+            //TicketPrice = 100000,      // tạm thời cố định
+
+            TicketPrice = selectedShowtime.Room.TicketPrice, // Lấy từ DB thay vì gán cứng
+            ShowtimeId = selectedShowtime.Id,
+
+            // Danh sách ghế đã đặt
+            AlreadyBookedSeats = bookedSeats
         };
 
+        // Trả về View hiển thị sơ đồ ghế
         return View(booking);
     }
-
-
 
     [HttpPost]
     public IActionResult ConfirmBooking(BookingViewModel model)
     {
+        // Kiểm tra nếu chưa chọn ghế
         if (string.IsNullOrEmpty(model.SeatNumbers))
-            return RedirectToAction("Index", new { movieId = model.MovieId });
+        {
+            // Quay lại trang Index để chọn lại
+            return RedirectToAction("Index", new { movieId = model.MovieId, showtimeId = model.ShowtimeId });
+        }
 
+        // Tách danh sách ghế
         var seats = model.SeatNumbers.Split(',');
 
+        // Lưu thông tin vé cho từng ghế
         foreach (var seat in seats)
         {
             var ticket = new Ticket
             {
-                ShowtimeId = model.ShowtimeId, // dùng ShowtimeId từ viewmodel
+                ShowtimeId = model.ShowtimeId,
                 SeatNumber = seat,
                 Price = model.TicketPrice,
-                UserId = User.Identity.IsAuthenticated ? _userManager.GetUserId(User) : null
+                UserId = User.Identity.IsAuthenticated
+                    ? _userManager.GetUserId(User)
+                    : null
             };
-
-
             _context.Tickets.Add(ticket);
         }
 
         _context.SaveChanges();
-        return RedirectToAction("Success");
+
+        // Sau khi đặt thành công => quay lại trang Index 
+        // để xem ghế vừa đặt chuyển sang màu đỏ (occupied).
+        return RedirectToAction("Index", new { movieId = model.MovieId, showtimeId = model.ShowtimeId });
     }
 
     public IActionResult Success()

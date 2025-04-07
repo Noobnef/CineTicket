@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using CineTicket.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Identity.Client;
 
 namespace CineTicket.Models
 {
