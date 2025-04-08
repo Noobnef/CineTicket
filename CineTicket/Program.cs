@@ -2,6 +2,9 @@ using CineTicket.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Hangfire; // ?? thêm m?i
+using Hangfire.SqlServer; // ?? thêm m?i
+using CineTicket.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,23 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 builder.Services.AddRazorPages();
+// 👉 Thêm dòng này để inject gửi mail
+builder.Services.AddTransient<IGmailSender, GmailSender>();
+builder.Services.AddTransient<IEmailSender, GmailSender>();
+
+// 👉 Đăng ký Hangfire
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    {
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+builder.Services.AddHangfireServer(); // 👉 Khởi tạo server nền Hangfire
 
 
 // Đăng ký MVC
@@ -51,7 +71,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 
-
+app.UseHangfireDashboard();
 
 app.MapStaticAssets();
 
