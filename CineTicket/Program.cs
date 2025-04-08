@@ -4,12 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Hangfire; // ?? thêm m?i
 using Hangfire.SqlServer; // ?? thêm m?i
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 using CineTicket.Repositories;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Localization - nơi chứa các file .resx
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 // Thêm dòng này để cấu hình Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -44,9 +51,28 @@ builder.Services.AddHangfire(configuration => configuration
     }));
 builder.Services.AddHangfireServer(); // 👉 Khởi tạo server nền Hangfire
 
+// Cấu hình các ngôn ngữ được hỗ trợ
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("vi-VN"),
+        new CultureInfo("en-US"),
+        new CultureInfo("fr-FR")
+    };
 
-// Đăng ký MVC
+    options.DefaultRequestCulture = new RequestCulture("vi-VN");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    // Lấy từ cookie
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+});
+
+// Cấu hình MVC với Localization
 builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization()
     .AddViewOptions(options =>
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
@@ -65,6 +91,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+// Áp dụng localization
+app.UseRequestLocalization(
+    app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value
+);
 
 app.UseRouting();
 app.UseAuthentication();
