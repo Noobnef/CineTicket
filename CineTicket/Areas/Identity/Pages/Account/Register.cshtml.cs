@@ -13,6 +13,7 @@ using CineTicket.Models;
 using CineTicket.Areas.Admin.Models;
 using Hangfire; // ✅ Dùng để gửi email nền
 using CineTicket.Repositories; // ✅ Dùng GmailSender
+///< !--Cập nhật UI -->
 
 namespace CineTicket.Areas.Identity.Pages.Account
 {
