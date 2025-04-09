@@ -1,10 +1,11 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
     ViewData["Title"] = "Đặt vé thành công";
 }
 <link href="~/css/dardmode.css" rel="stylesheet" />
 <link href="~/css/lightmode.css" rel="stylesheet" />
-<h2>Đặt vé thành công!</h2>
-<p>Cảm ơn bạn đã đặt vé. Chúng tôi đã gửi email xác nhận.</p>
+<h2>@Localizer["Title"]!</h2>
+<p>@Localizer["Message"]</p>
 
-<a href="@Url.Action("Index", "Movie")" class="btn btn-secondary">Quay lại danh sách phim</a>
+<a href="@Url.Action("Index", "Movie")" class="btn btn-secondary">@Localizer["BackToMovies"]</a>
 <script src="~/js/movie.js"></script>

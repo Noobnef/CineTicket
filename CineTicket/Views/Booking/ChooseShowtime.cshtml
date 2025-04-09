@@ -1,4 +1,5 @@
-﻿@model ChooseShowtimeViewModel
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model ChooseShowtimeViewModel
 @{
     ViewData["Title"] = "Chọn suất chiếu cho " + Model.MovieTitle;
 }
@@ -10,7 +11,7 @@
 <div class="container my-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">🎬 Chọn suất chiếu cho: @Model.MovieTitle</h4>
+            <h4 class="mb-0">🎬 @Localizer["Title"]: @Model.MovieTitle</h4>
         </div>
         <div class="card-body">
             @if (Model.Showtimes != null && Model.Showtimes.Any())
@@ -28,7 +29,7 @@
                                asp-route-movieId="@Model.MovieId"
                                asp-route-showtimeId="@s.Id"
                                class="btn btn-sm btn-danger">
-                                <i class="bi bi-ticket-detailed me-1"></i> Đặt vé
+                                <i class="bi bi-ticket-detailed me-1"></i> @Localizer["Book"]
                             </a>
                         </div>
                     }
@@ -36,7 +37,7 @@
             }
             else
             {
-                <p class="text-muted">Hiện chưa có suất chiếu cho phim này.</p>
+                <p class="text-muted">@Localizer["NoShowtime"]</p>
             }
         </div>
     </div>

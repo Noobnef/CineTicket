@@ -1,4 +1,5 @@
-﻿@model CineTicket.Models.BookingViewModel
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model CineTicket.Models.BookingViewModel
 
 @{
     var bookedSeatsJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model.AlreadyBookedSeats ?? new List<string>());
@@ -8,7 +9,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chọn Ghế - @Model.MovieTitle</title>
+    <title>@Localizer["SelectedSeat"] - @Model.MovieTitle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/dardmode.css" rel="stylesheet" />
     <link href="~/css/lightmode.css" rel="stylesheet" />
@@ -17,27 +18,27 @@
 <body>
     <div class="container py-5">
         <div class="theater-card mx-auto" style="max-width: 850px;">
-            <h2 class="text-center mb-4">Chọn Ghế - @Model.MovieTitle</h2>
-            <div class="screen">MÀN HÌNH</div>
+            <h2 class="text-center mb-4">@Localizer["SelectedSeat"] - @Model.MovieTitle</h2>
+            <div class="screen">@Localizer["SCREEN"]</div>
 
             <!-- Khu vực ghế -->
             <div class="seat-container" id="seat-container"></div>
 
             <!-- Chú thích -->
             <div class="legend">
-                <span><div class="seat"></div> Ghế trống</span>
-                <span><div class="seat selected"></div> Đang chọn</span>
-                <span><div class="seat occupied"></div> Đã đặt</span>
+                <span><div class="seat"></div>@Localizer["AvailableSeat"]</span>
+                <span><div class="seat selected"></div>@Localizer["SelectedSeat"]</span>
+                <span><div class="seat occupied"></div>@Localizer["BookedSeat"]</span>
             </div>
 
             <!-- Hiển thị tổng tiền -->
             <div class="total-section text-center">
                 <h4>
-                    Tổng tiền:
+                    @Localizer["Total"]:
                     <span id="total-price" class="text-primary">0</span> VND
                 </h4>
                 <!-- Nút đặt vé, ban đầu disabled -->
-                <button id="book-btn" class="btn btn-secondary mt-3" disabled>Đặt vé</button>
+                <button id="book-btn" class="btn btn-secondary mt-3" disabled>@Localizer["BookNow"]</button>
             </div>
         </div>
     </div>

@@ -117,43 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Privacy" xml:space="preserve">
-    <value>Quyền riêng tư</value>
+  <data name="Title" xml:space="preserve">
+    <value />
   </data>
-  <data name="AdminPanel" xml:space="preserve">
-    <value>Quản trị viên</value>
+  <data name="Book" xml:space="preserve">
+    <value>Book</value>
   </data>
-  <data name="Login" xml:space="preserve">
-    <value>Đăng nhập</value>
-  </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Đăng xuất</value>
-  </data>
-  <data name="LanguageLabel" xml:space="preserve">
-    <value>Ngôn ngữ</value>
-  </data>
-  <data name="DarkModeToggle" xml:space="preserve">
-    <value>Chuyển chế độ</value>
-  </data>
-  <data name="Home" xml:space="preserve">
-    <value>Trang chủ</value>
-  </data>
-  <data name="Footer_Company" xml:space="preserve">
-    <value>Hệ thống đặt vé xem phim trực tuyến hàng đầu Việt Nam</value>
-  </data>
-  <data name="Footer_Privacy" xml:space="preserve">
-    <value>Chính sách</value>
-  </data>
-  <data name="Footer_About" xml:space="preserve">
-    <value>Giới thiệu</value>
-  </data>
-  <data name="Footer_Connect" xml:space="preserve">
-    <value>Kết nối với chúng tôi</value>
-  </data>
-  <data name="Hello" xml:space="preserve">
-    <value>Xin chào</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Liên kết</value>
+  <data name="NoShowtime" xml:space="preserve">
+    <value>There is currently no showtime</value>
   </data>
 </root>

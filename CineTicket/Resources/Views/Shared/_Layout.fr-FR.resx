@@ -123,7 +123,7 @@
   <data name="AdminPanel" xml:space="preserve">
     <value>Panneau d'administration</value>
   </data>
-  <data name="Login " xml:space="preserve">
+  <data name="Login" xml:space="preserve">
     <value>Connexion</value>
   </data>
   <data name="Logout" xml:space="preserve">
@@ -152,5 +152,8 @@
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Bonjour</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Liens</value>
   </data>
 </root>
