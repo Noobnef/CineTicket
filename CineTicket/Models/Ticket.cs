@@ -6,6 +6,8 @@ namespace CineTicket.Models
     public class Ticket
     {
         public int Id { get; set; }
+        public DateTime BookingTime { get; set; } = DateTime.Now;
+
 
         // Quan hệ với Showtime
         public int ShowtimeId { get; set; }
@@ -14,7 +16,7 @@ namespace CineTicket.Models
         // Tự động lấy Movie từ Showtime nếu cần (không nên dùng Include trực tiếp)
 
         public string SeatNumber { get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         // Nếu có người dùng
         public string UserId { get; set; }

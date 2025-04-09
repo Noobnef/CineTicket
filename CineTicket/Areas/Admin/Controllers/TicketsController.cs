@@ -97,6 +97,19 @@ namespace CineTicket.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [HttpGet]
+        public IActionResult DeleteAll()
+        {
+            var allTickets = _context.Tickets.ToList();
+            _context.Tickets.RemoveRange(allTickets);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Đã xoá toàn bộ vé.";
+            return RedirectToAction("Index");
+        }
+
+
         // ========== Helper: nạp dropdown ==========
         private void LoadDropdowns(Ticket? selected = null)
         {

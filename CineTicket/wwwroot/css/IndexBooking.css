@@ -18,7 +18,6 @@ body.dark-mode {
     --seat-label: rgba(255, 255, 255, 0.7);
     --total-bg: #2a2a3a;
 }
-
 /* ======= GIAO DIỆN CHUNG ======= */
 body {
     background: var(--bg);
@@ -36,7 +35,7 @@ body {
 }
 
 .screen {
-    background: linear-gradient(to right, #2c3e50, #3498db);
+    background: var(--screen-bg);
     color: white;
     display: flex;
     align-items: center; /* căn giữa theo chiều dọc */
@@ -50,8 +49,9 @@ body {
     text-transform: uppercase;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    width: auto; /* Ghi đè định nghĩa width khác */
+    height: auto; /* Ghi đè định nghĩa height khác */
 }
-
 
 .seat-container {
     display: grid;
@@ -102,7 +102,6 @@ body {
     color: var(--seat-label);
     pointer-events: none;
 }
-
 /* ======= CHÚ GIẢI ======= */
 .legend {
     display: flex;
@@ -115,11 +114,16 @@ body {
         width: 25px;
         height: 25px;
     }
-
 /* ======= TỔNG TIỀN ======= */
 .total-section {
     margin-top: 20px;
     background-color: var(--total-bg);
     padding: 15px;
     border-radius: 10px;
+}
+/* Định nghĩa rõ ràng cho phần tổng tiền */
+#total-price {
+    display: inline-block;
+    font-weight: bold;
+    min-width: 60px; /* Đảm bảo rộng đủ để hiển thị số 0 */
 }

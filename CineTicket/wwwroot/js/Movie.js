@@ -68,7 +68,7 @@
     const bookingProgressBar = document.getElementById('bookingProgress');
 
     let selectedSeats = [];
-    const ticketPrice = 50000;
+    const ticketPrice;
 
     seats.forEach(seat => {
         seat.addEventListener('click', function () {

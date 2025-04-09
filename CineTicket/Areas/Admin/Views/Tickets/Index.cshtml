@@ -13,12 +13,18 @@
 <a asp-action="Add" class="btn btn-primary mb-3">
     <i class="bi bi-plus-lg"></i> Thêm vé
 </a>
+<a asp-action="DeleteAll" class="btn btn-danger mb-3 ms-2"
+   onclick="return confirm('Bạn có chắc muốn xoá tất cả vé không?')">
+    <i class="bi bi-trash3"></i> Xoá tất cả vé
+</a>
 
 <div class="table-responsive">
     <table id="ticketsTable" class="table table-hover table-bordered table-striped text-light align-middle" style="width:100%">
         <thead class="table-secondary text-dark">
             <tr>
                 <th>Phim / Suất</th>
+                <th>Thời gian đặt</th>
+
                 <th>Ghế</th>
                 <th>Giá</th>
                 <th>Người đặt</th>
@@ -35,6 +41,8 @@
                             @t.Showtimes?.StartTime.ToString("dd/MM/yyyy HH:mm")
                         </small>
                     </td>
+                    <td>@t.BookingTime.ToString("dd/MM/yyyy HH:mm")</td>
+
                     <td>@t.SeatNumber</td>
                     <td>@t.Price.ToString("N0") đ</td>
                     <td>@t.User?.Email</td>
@@ -42,6 +50,7 @@
                         <a asp-action="Edit" asp-route-id="@t.Id" class="btn btn-sm btn-warning me-1">Sửa</a>
                         <a asp-action="Delete" asp-route-id="@t.Id" class="btn btn-sm btn-danger"
                            onclick="return confirm('Xoá vé này?')">Xoá</a>
+
                     </td>
                 </tr>
             }

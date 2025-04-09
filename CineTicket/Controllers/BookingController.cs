@@ -99,6 +99,7 @@ public class BookingController : Controller
                 ShowtimeId = model.ShowtimeId,
                 SeatNumber = seat,
                 Price = model.TicketPrice,
+                BookingTime = DateTime.Now,
                 UserId = User.Identity.IsAuthenticated
                     ? _userManager.GetUserId(User)
                     : null
