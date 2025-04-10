@@ -23,6 +23,8 @@ namespace CineTicket.Models
         public string PosterUrl { get; set; }
 
         public string BannerUrl { get; set; }
+        public bool HasShowtime { get; set; } 
+
         public int Duration { get; set; }
     }
 }

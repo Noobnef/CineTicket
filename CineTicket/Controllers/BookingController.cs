@@ -27,7 +27,7 @@ public class BookingController : Controller
         if (!showtimeId.HasValue)
         {
             var showtimes = _context.Showtimes
-                .Where(s => s.MovieId == movieId)
+                .Where(s => s.MovieId == movieId && s.StartTime > DateTime.Now)
                 .OrderBy(s => s.StartTime)
                 .ToList();
 
