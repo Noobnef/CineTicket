@@ -13,11 +13,15 @@ namespace CineTicket.Models
         public string? Address { get; set; }
 
         public string? EmailConfirmationOTP { get; set; }
+
         public DateTime? OTPGeneratedTime { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
+
         [Required]
-        public string Role { get; set; }
+        public string Role { get; set; } = string.Empty; // gán mặc định để tránh lỗi
+
+        public string? OTP { get; set; } // ✅ cho phép null để tránh lỗi khi chưa có OTP
     }
 }
