@@ -117,7 +117,9 @@ public class BookingController : Controller
         {
             var user = await _userManager.GetUserAsync(User);
             await _gmailSender.SendEmailWithAttachmentAsync(user.Email, "Vé xem phim CineTicket",
-                $"Cảm ơn bạn đã đặt vé cho phim: {movie.Title}. Ghế: {model.SeatNumbers}. Tổng tiền: {totalPrice:N0} VND.",
+                $"Cảm ơn bạn đã đặt vé cho phim: {movie.Title}. " +
+                $"Ghế: {model.SeatNumbers}. " +
+                $"Tổng tiền: {totalPrice:N0} VND.",
                 pdfBytes, "ve-phim.pdf");
         }
 

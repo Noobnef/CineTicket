@@ -128,13 +128,22 @@
                 document.getElementById("selected-seats").value = selectedSeatsArray.join(',');
             }
 
-            bookButton.addEventListener("click", () => {
-                if (selectedSeatsArray.length === 0) {
-                    alert("@Localizer["PleaseSelectSeat"]");
-                    return;
-                }
+                    bookButton.addEventListener("click", () => {
+            if (selectedSeatsArray.length === 0) {
+                alert("@Localizer["PleaseSelectSeat"]");
+                return;
+            }
+
+            const seatList = selectedSeatsArray.join(', ');
+            const total = selectedSeatsArray.length * seatPrice;
+
+            const message = `🎬 Xác nhận đặt vé\nPhim: @Html.Raw(Model.MovieTitle.Replace("'", "\\'"))\nGhế: ${seatList}\nTổng tiền: ${total.toLocaleString('vi-VN')} VND\n\nBạn có muốn tiếp tục đặt vé?`;
+
+            if (confirm(message)) {
                 document.getElementById("booking-form").submit();
-            });
+            }
+        });
+
         });
 	</script>
 	<script src="~/js/movie.js"></script>
