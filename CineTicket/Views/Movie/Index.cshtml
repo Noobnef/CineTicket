@@ -58,11 +58,11 @@
                             <img src="@item.PosterUrl" class="card-img-top" alt="@item.Title" />
                             @if (item.HasShowtime)
                             {
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">@Localizer["Có suất chiếu"]</span>
+                                <span class="badge bg-success position-absolute top-0 start-0 m-2">@Localizer["Showtime"]</span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary position-absolute top-0 start-0 m-2">@Localizer["Không có suất chiếu"]</span>
+                                <span class="badge bg-secondary position-absolute top-0 start-0 m-2">@Localizer["NoShowtime"]</span>
 
                             }
                             <div class="card-body d-flex flex-column">

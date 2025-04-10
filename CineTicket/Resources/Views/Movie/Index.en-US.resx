@@ -144,4 +144,10 @@
   <data name="NotFound" xml:space="preserve">
     <value>No movies found.</value>
   </data>
+  <data name="Showtime" xml:space="preserve">
+    <value>Showtime</value>
+  </data>
+  <data name="NoShowtime" xml:space="preserve">
+    <value>No showtimes available</value>
+  </data>
 </root>

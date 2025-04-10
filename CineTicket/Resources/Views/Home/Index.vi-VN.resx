@@ -117,37 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="HotMovies" xml:space="preserve">
-    <value>Films populaires</value>
-  </data>
-  <data name="NowShowing" xml:space="preserve">
-    <value>À l'affiche</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Rechercher</value>
-  </data>
-  <data name="SearchPlaceholder" xml:space="preserve">
-    <value>Rechercher un film par nom...</value>
-  </data>
-  <data name="New" xml:space="preserve">
-    <value>Nouveau</value>
-  </data>
-  <data name="Select" xml:space="preserve">
-    <value>Sélectionner</value>
-  </data>
   <data name="Details" xml:space="preserve">
-    <value>Détails</value>
+    <value>Chi tiết</value>
+  </data>
+  <data name="FeaturedMovies" xml:space="preserve">
+    <value>PHIM NỔI BẬT</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Trải nghiệm phim chất lượng cao với dịch vụ đặt vé trực tuyến dễ dàng</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Chào mừng đến với 🎬 CineTicket</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>minutes</value>
+    <value>phút</value>
   </data>
-  <data name="NotFound" xml:space="preserve">
-    <value>Aucun film trouvé.</value>
-  </data>
-  <data name="Showtime" xml:space="preserve">
-    <value>Séance</value>
-  </data>
-  <data name="NoShowtime" xml:space="preserve">
-    <value>Aucune séance disponible</value>
+  <data name="ViewAllMovies" xml:space="preserve">
+    <value>Xem tất cả phim</value>
   </data>
 </root>

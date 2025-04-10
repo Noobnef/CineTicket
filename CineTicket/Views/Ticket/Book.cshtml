@@ -1,8 +1,9 @@
-﻿@model Showtime
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Showtime
 
-<h2>Đặt vé cho phim: @Model.Movie.Title</h2>
+<h2>@Localizer["Title"]: @Model.Movie.Title</h2>
 <form method="post">
-    <label>Chọn ghế:</label>
+    <label>@Localizer["ChooseSeat"]:</label>
     <input type="text" name="seatNumber" required />
-    <button type="submit">Đặt vé</button>
+    <button type="submit">@Localizer["SubmitButton"]</button>
 </form>

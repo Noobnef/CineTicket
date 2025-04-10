@@ -144,4 +144,10 @@
   <data name="NotFound" xml:space="preserve">
     <value>Không tìm thấy phim.</value>
   </data>
+  <data name="Showtime" xml:space="preserve">
+    <value>Có suất chiếu</value>
+  </data>
+  <data name="NoShowtime" xml:space="preserve">
+    <value>Không có suất chiếu</value>
+  </data>
 </root>
