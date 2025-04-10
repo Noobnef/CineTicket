@@ -43,7 +43,6 @@ public class MovieController : Controller
             return View(movie);
         }
         [HttpGet]
-        [HttpGet]
         public async Task<IActionResult> Search(string term)
         {
             if (string.IsNullOrWhiteSpace(term))
