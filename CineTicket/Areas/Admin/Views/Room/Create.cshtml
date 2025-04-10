@@ -1,30 +1,30 @@
 ﻿@model CineTicket.Models.Room
 
+<!-- Create.cshtml -->
 @{
-    ViewData["Title"] = "Tạo phòng";
+    ViewData["Title"] = "Tạo Phòng Mới";
 }
-
-<h1>Tạo phòng mới</h1>
+<h2>@ViewData["Title"]</h2>
 
 <form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name"></span>
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-
-    <div class="form-group">
-        <label asp-for="SeatCount"></label>
+    <div class="mb-3">
+        <label asp-for="SeatCount" class="form-label"></label>
         <input asp-for="SeatCount" class="form-control" />
-        <span asp-validation-for="SeatCount"></span>
+        <span asp-validation-for="SeatCount" class="text-danger"></span>
     </div>
-
-    <div class="form-group">
-        <label asp-for="TicketPrice"></label>
+    <div class="mb-3">
+        <label asp-for="TicketPrice" class="form-label"></label>
         <input asp-for="TicketPrice" class="form-control" />
-        <span asp-validation-for="TicketPrice"></span>
+        <span asp-validation-for="TicketPrice" class="text-danger"></span>
     </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    <button type="submit" class="btn btn-primary">Tạo</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
 </form>
+
+<hr />
+<partial name="_ValidationScriptsPartial" />

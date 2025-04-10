@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using CineTicket.Models;
 using Microsoft.AspNetCore.Authorization;
+
 namespace CineTicket.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-
     public class RoomController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,35 +16,34 @@ namespace CineTicket.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Room/Index
+        // GET: Admin/Room
         public async Task<IActionResult> Index()
         {
             var rooms = await _context.Rooms.ToListAsync();
             return View(rooms);
         }
 
-        // GET: Room/Details/5
+        // GET: Admin/Room/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var room = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
             if (room == null) return NotFound();
 
             return View(room);
         }
 
-        // GET: Room/Create
+        // GET: Admin/Room/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Room/Create
+        // POST: Admin/Room/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Room room)
+        public async Task<IActionResult> Create([Bind("Name,SeatCount,TicketPrice")] Room room)
         {
             if (ModelState.IsValid)
             {
@@ -55,7 +54,7 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // GET: Room/Edit/5
+        // GET: Admin/Room/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -66,10 +65,10 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // POST: Room/Edit/5
+        // POST: Admin/Room/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Room room)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SeatCount,TicketPrice")] Room room)
         {
             if (id != room.Id) return NotFound();
 
@@ -83,32 +82,27 @@ namespace CineTicket.Areas.Admin.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!RoomExists(room.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(room);
         }
 
-        // GET: Room/Delete/5
+        // GET: Admin/Room/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var room = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
             if (room == null) return NotFound();
 
             return View(room);
         }
 
-        // POST: Room/Delete/5
+        // POST: Admin/Room/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
