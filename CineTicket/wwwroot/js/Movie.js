@@ -18,7 +18,6 @@
             localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
         });
 
-        // Load trạng thái từ localStorage
         const savedMode = localStorage.getItem("darkMode");
         if (savedMode === "enabled") {
             document.body.classList.add("dark-mode");
@@ -68,7 +67,7 @@
     const bookingProgressBar = document.getElementById('bookingProgress');
 
     let selectedSeats = [];
-    const ticketPrice;
+    const ticketPrice = 100000; // ✅ Đã sửa lỗi khai báo
 
     seats.forEach(seat => {
         seat.addEventListener('click', function () {
