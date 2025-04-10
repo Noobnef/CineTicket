@@ -13,20 +13,18 @@ namespace CineTicket.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         public TicketsController(ApplicationDbContext context) => _context = context;
 
-        // ========== Danh sách ==========
         public IActionResult Index()
         {
             var tickets = _context.Tickets
                                   .Include(t => t.Showtimes)
                                       .ThenInclude(s => s.Movie)
-                                  .Include(t => t.User)       // Thêm dòng này để nạp User
+                                  .Include(t => t.User)
                                   .ToList();
 
             return View(tickets);
         }
 
 
-        // ========== Thêm ==========
         public IActionResult Add()
         {
             LoadDropdowns();
@@ -36,7 +34,6 @@ namespace CineTicket.Areas.Admin.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Add(Ticket ticket)
         {
-            // cho phép UserId để trống ⇒ xoá lỗi nếu có
             ModelState.Remove(nameof(Ticket.UserId));
 
             if (!ModelState.IsValid)
@@ -50,7 +47,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ========== Sửa ==========
         public IActionResult Edit(int id)
         {
             var ticket = _context.Tickets.Find(id);
@@ -77,7 +73,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ========== Xoá ==========
         public IActionResult Delete(int id)
         {
             var ticket = _context.Tickets
@@ -110,10 +105,8 @@ namespace CineTicket.Areas.Admin.Controllers
         }
 
 
-        // ========== Helper: nạp dropdown ==========
         private void LoadDropdowns(Ticket? selected = null)
         {
-            // Suất chiếu – chỉ hiển thị “Tên phim” (đơn giản hoá)
             var showtimeList = _context.Showtimes
                                        .Include(s => s.Movie)
                                        .Select(s => new

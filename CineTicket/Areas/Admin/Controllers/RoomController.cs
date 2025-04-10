@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace CineTicket.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class RoomController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,14 +16,12 @@ namespace CineTicket.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/Room
         public async Task<IActionResult> Index()
         {
             var rooms = await _context.Rooms.ToListAsync();
             return View(rooms);
         }
 
-        // GET: Admin/Room/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -34,13 +32,11 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // GET: Admin/Room/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Room/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,SeatCount,TicketPrice")] Room room)
@@ -54,7 +50,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // GET: Admin/Room/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -65,7 +60,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // POST: Admin/Room/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SeatCount,TicketPrice")] Room room)
@@ -91,7 +85,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // GET: Admin/Room/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -102,7 +95,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(room);
         }
 
-        // POST: Admin/Room/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

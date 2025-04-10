@@ -6,7 +6,6 @@
         public string Name { get; set; }
         public int SeatCount { get; set; }
 
-        // Thêm cột giá vé
         public int TicketPrice { get; set; }
 
         public ICollection<Seat> Seats { get; set; }

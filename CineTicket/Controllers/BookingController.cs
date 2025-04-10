@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
-using CineTicket.Repositories; // tích hợp GmailSender
+using CineTicket.Repositories;
 using PdfSharpCore.Drawing.Layout;
 
 public class BookingController : Controller
@@ -97,7 +97,6 @@ public class BookingController : Controller
             _context.Tickets.Add(ticket);
         }
 
-        // Lưu lịch sử đặt vé
         var history = new BookingHistory
         {
             UserId = userId,

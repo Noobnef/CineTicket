@@ -21,10 +21,10 @@ namespace CineTicket.Models
 
         [Required(ErrorMessage = "Vui lòng chọn phòng.")]
         public int RoomId { get; set; }
-        [ValidateNever]            // tuỳ chọn: bỏ qua validation MVC
+        [ValidateNever]            
         public Movie Movie { get; set; }
 
-        [ValidateNever]            // hoặc simply bỏ trống attribute
+        [ValidateNever]           
         public Room Room { get; set; }
 
     }

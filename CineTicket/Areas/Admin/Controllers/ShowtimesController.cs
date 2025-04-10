@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CineTicket.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class ShowtimesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,12 +26,12 @@ namespace CineTicket.Areas.Admin.Controllers
                 .Include(s => s.Room)
                 .ToListAsync();
             return View(showtimes);
-        }// GET: Showtimes/Add
+        }
         public IActionResult Add()
         {
             LoadDropdowns();
 
-            // StartTime mặc định = thời điểm hiện tại
+            // StartTime = thoi diem hien tai
             var model = new Showtime
             {
                 StartTime = DateTime.Now
@@ -40,7 +40,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(model);
         }
 
-        /*--------------------------------------  ADD (POST) */
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Showtime showtime)
         {
@@ -77,7 +76,6 @@ namespace CineTicket.Areas.Admin.Controllers
             return View(showtime);
         }
 
-        /*--------------------------------------  EDIT (POST) */
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Showtime showtime)
         {

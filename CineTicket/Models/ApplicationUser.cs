@@ -20,8 +20,8 @@ namespace CineTicket.Models
         public DateTime? DateOfBirth { get; set; }
 
         [Required]
-        public string Role { get; set; } = string.Empty; // gán mặc định để tránh lỗi
+        public string Role { get; set; } = string.Empty; 
 
-        public string? OTP { get; set; } // ✅ cho phép null để tránh lỗi khi chưa có OTP
+        public string? OTP { get; set; } 
     }
 }

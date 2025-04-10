@@ -17,13 +17,11 @@ namespace CineTicket.Repositories
             _configuration = configuration;
         }
 
-        // Gửi email không đính kèm
         public async Task SendEmail(string to, string subject, string body)
         {
             await SendEmailAsync(to, subject, body);
         }
 
-        // Gửi email HTML (dùng cho Identity UI)
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var smtpSection = _configuration.GetSection("EmailSettings");
@@ -42,7 +40,6 @@ namespace CineTicket.Repositories
             await client.DisconnectAsync(true);
         }
 
-        // Gửi email có đính kèm (PDF vé)
         public async Task SendEmailWithAttachmentAsync(string email, string subject, string htmlMessage, byte[] attachment, string filename)
         {
             var smtpSection = _configuration.GetSection("EmailSettings");

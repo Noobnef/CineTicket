@@ -67,7 +67,6 @@ namespace CineTicket.Areas.Admin.Controllers
             {
                 await _userManager.AddToRoleAsync(user, model.SelectedRole);
 
-                // Nếu ApplicationUser có property Role, cập nhật luôn:
                 user.Role = model.SelectedRole;
                 await _userManager.UpdateAsync(user);
             }

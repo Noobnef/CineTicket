@@ -52,8 +52,8 @@ public class MovieController : Controller
                 .Where(m => EF.Functions.Like(m.Title, $"%{term}%"))
                 .Select(m => new
                 {
-                    label = m.Title,   // Tên hiển thị
-                    value = m.Id       // Giá trị dùng để chuyển trang
+                    label = m.Title,   
+                    value = m.Id
                 })
                 .Take(10)
                 .ToListAsync();
