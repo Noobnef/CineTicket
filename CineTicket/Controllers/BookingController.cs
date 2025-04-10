@@ -3,27 +3,33 @@ using CineTicket.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
+using System;
+using System.IO;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Drawing;
+using CineTicket.Repositories; // tích hợp GmailSender
+using PdfSharpCore.Drawing.Layout;
 
 public class BookingController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IGmailSender _gmailSender;
 
-    public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGmailSender gmailSender)
     {
         _context = context;
         _userManager = userManager;
+        _gmailSender = gmailSender;
     }
 
     public IActionResult Index(int movieId, int? showtimeId)
     {
         var movie = _context.Movies.FirstOrDefault(m => m.Id == movieId);
         if (movie == null)
-        {
             return NotFound("Không tìm thấy phim.");
-        }
 
-        // Nếu chưa chọn suất chiếu => hiển thị trang ChooseShowtime
         if (!showtimeId.HasValue)
         {
             var showtimes = _context.Showtimes
@@ -32,11 +38,8 @@ public class BookingController : Controller
                 .ToList();
 
             if (!showtimes.Any())
-            {
                 return BadRequest("Phim này chưa có suất chiếu.");
-            }
 
-            // Trả về View cho phép người dùng chọn suất chiếu
             return View("ChooseShowtime", new ChooseShowtimeViewModel
             {
                 MovieId = movie.Id,
@@ -45,53 +48,42 @@ public class BookingController : Controller
             });
         }
 
-        // Nếu đã có showtimeId => Lấy suất chiếu để chuẩn bị đặt vé
         var selectedShowtime = _context.Showtimes
-            .Include(s => s.Room) // cần Include để lấy Room
+            .Include(s => s.Room)
             .FirstOrDefault(s => s.Id == showtimeId.Value && s.MovieId == movieId);
-        if (selectedShowtime == null)
-        {
-            return BadRequest("Suất chiếu không hợp lệ.");
-        }
 
-        // Lấy các ghế đã đặt cho suất chiếu này
+        if (selectedShowtime == null)
+            return BadRequest("Suất chiếu không hợp lệ.");
+
         var bookedSeats = _context.Tickets
             .Where(t => t.ShowtimeId == selectedShowtime.Id)
             .Select(t => t.SeatNumber)
             .ToList();
 
-        // Tạo ViewModel
         var booking = new BookingViewModel
         {
             MovieId = movie.Id,
             MovieTitle = movie.Title,
-            //TicketPrice = 100000,      // tạm thời cố định
-
-            TicketPrice = selectedShowtime.Room.TicketPrice, // Lấy từ DB thay vì gán cứng
+            TicketPrice = selectedShowtime.Room.TicketPrice,
             ShowtimeId = selectedShowtime.Id,
-
-            // Danh sách ghế đã đặt
             AlreadyBookedSeats = bookedSeats
         };
 
-        // Trả về View hiển thị sơ đồ ghế
         return View(booking);
     }
 
     [HttpPost]
-    public IActionResult ConfirmBooking(BookingViewModel model)
+    public async Task<IActionResult> ConfirmBooking(BookingViewModel model)
     {
-        // Kiểm tra nếu chưa chọn ghế
         if (string.IsNullOrEmpty(model.SeatNumbers))
         {
-            // Quay lại trang Index để chọn lại
             return RedirectToAction("Index", new { movieId = model.MovieId, showtimeId = model.ShowtimeId });
         }
 
-        // Tách danh sách ghế
         var seats = model.SeatNumbers.Split(',');
+        var userId = User.Identity.IsAuthenticated ? _userManager.GetUserId(User) : null;
+        decimal totalPrice = model.TicketPrice * seats.Length;
 
-        // Lưu thông tin vé cho từng ghế
         foreach (var seat in seats)
         {
             var ticket = new Ticket
@@ -100,22 +92,64 @@ public class BookingController : Controller
                 SeatNumber = seat,
                 Price = model.TicketPrice,
                 BookingTime = DateTime.Now,
-                UserId = User.Identity.IsAuthenticated
-                    ? _userManager.GetUserId(User)
-                    : null
+                UserId = userId
             };
             _context.Tickets.Add(ticket);
         }
 
-        _context.SaveChanges();
+        // Lưu lịch sử đặt vé
+        var history = new BookingHistory
+        {
+            UserId = userId,
+            ShowtimeId = model.ShowtimeId,
+            SeatNumbers = model.SeatNumbers,
+            TotalAmount = totalPrice,
+            BookingDate = DateTime.Now
+        };
+        _context.BookingHistories.Add(history);
 
-        // Sau khi đặt thành công => quay lại trang Index 
-        // để xem ghế vừa đặt chuyển sang màu đỏ (occupied).
-        return RedirectToAction("Index", new { movieId = model.MovieId, showtimeId = model.ShowtimeId });
+        await _context.SaveChangesAsync();
+
+        var movie = await _context.Movies.FindAsync(model.MovieId);
+        var pdfBytes = GenerateTicketPdf(movie.Title, model.SeatNumbers, totalPrice);
+
+        if (User.Identity.IsAuthenticated)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            await _gmailSender.SendEmailWithAttachmentAsync(user.Email, "Vé xem phim CineTicket",
+                $"Cảm ơn bạn đã đặt vé cho phim: {movie.Title}. Ghế: {model.SeatNumbers}. Tổng tiền: {totalPrice:N0} VND.",
+                pdfBytes, "ve-phim.pdf");
+        }
+
+        return RedirectToAction("Success");
     }
 
     public IActionResult Success()
     {
         return View();
     }
+
+    private byte[] GenerateTicketPdf(string movie, string seats, decimal amount)
+    {
+        using var ms = new MemoryStream();
+        var doc = new PdfDocument();
+        var page = doc.AddPage();
+        var gfx = XGraphics.FromPdfPage(page);
+
+        var font = new XFont("Arial", 14);
+        var brush = XBrushes.Black;
+
+        string content = $"🎬 Vé Xem Phim\n" +
+                         $"Phim: {movie}\n" +
+                         $"Ghế: {seats}\n" +
+                         $"Tổng tiền: {amount:N0} VND\n" +
+                         $"Ngày đặt: {DateTime.Now:dd/MM/yyyy HH:mm}";
+
+        var rect = new XRect(40, 40, page.Width - 80, page.Height - 80);
+        gfx.DrawString(content, font, brush, rect, XStringFormats.TopLeft);
+
+        doc.Save(ms);
+        return ms.ToArray();
+    }
+
 }
