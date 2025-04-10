@@ -15,13 +15,13 @@
     <link href="~/css/darkmode.css" rel="stylesheet" />
     <link href="~/css/lightmode.css" rel="stylesheet" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CineTicket</a>
+                <a class="navbar-brand">CineTicket</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -35,16 +35,12 @@
                                 <a class="nav-link" href="/Admin/Users">@Localizer["AdminPanel"]</a>
                             </li>
                         }
-
                     </ul>
-					<partial name="_LoginPartial" />
-                    <!-- Lấy ngôn ngữ hiện tại từ Cookie -->
+                    <partial name="_LoginPartial" />
                     @{
                         var cultureFeature = HttpContextAccessor.HttpContext?.Features.Get<IRequestCultureFeature>();
-                        var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN"; // Mặc định là tiếng Việt
+                        var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN";
                     }
-
-                    <!-- Dropdown chọn ngôn ngữ -->
                     <div class="ms-3">
                         <form asp-controller="Language" asp-action="SetLanguage" method="post">
                             <select name="culture" class="form-select" onchange="this.form.submit();">
@@ -62,23 +58,21 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container flex-grow-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <!-- Footer -->
-    <footer class="text-light bg-dark py-4 mt-5">
+    <footer class="text-light bg-dark py-4 mt-auto">
         <div class="container">
             <div class="row">
-                <!-- Cột 1 -->
                 <div class="col-md-4 text-center p-2">
                     <h5 class="fw-bold">🎬 CineTicket</h5>
                     <p>@Localizer["Footer_Company"]</p>
                 </div>
-
-                <!-- Cột 2: Liên kết -->
                 <div class="col-md-4 text-center p-2">
                     <h5 class="fw-bold">@Localizer["Connect"]</h5>
                     <p>
@@ -86,8 +80,6 @@
                         <a class="nav-link text-light" asp-controller="Home" asp-action="About">@Localizer["Footer_About"]</a>
                     </p>
                 </div>
-
-                <!-- Cột 3: Mạng xã hội -->
                 <div class="col-md-4 text-center p-2">
                     <h5 class="fw-bold">@Localizer["Footer_Connect"]</h5>
                     <div class="mt-3">
@@ -103,20 +95,16 @@
                     </div>
                 </div>
             </div>
-
             <hr class="border-secondary" />
             <p class="text-center mb-0">&copy; 2025 CineTicket. All rights reserved.</p>
         </div>
     </footer>
 
-    </div>
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-	<script src="~/js/movie.js"></script>
+    <script src="~/js/movie.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

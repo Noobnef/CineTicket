@@ -55,12 +55,6 @@
                     <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Xác nhận mật khẩu" />
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
-                        <option disabled selected>-- Chọn quyền --</option>
-                    </select>
-                    <span asp-validation-for="Input.Role" class="text-danger"></span>
-                </div>
                 <button type="submit" class="btn btn-register w-100">Đăng Ký</button>
                 <div class="text-center mt-3">
                     <a href="/Identity/Account/Login" class="text-light">Đã có tài khoản? Đăng nhập</a>
