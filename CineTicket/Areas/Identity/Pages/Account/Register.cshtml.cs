@@ -1,19 +1,16 @@
 ﻿using System.Text;
-using System.Text.Encodings.Web;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using CineTicket.Models;
 using CineTicket.Areas.Admin.Models;
-using Hangfire; // ✅ Dùng để gửi email nền
-using CineTicket.Repositories; // ✅ Dùng GmailSender
-///< !--Cập nhật UI -->
+using Hangfire;
+using CineTicket.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace CineTicket.Areas.Identity.Pages.Account
 {
@@ -25,7 +22,7 @@ namespace CineTicket.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IGmailSender _gmailSender; // ✅ Dùng để gửi email xác nhận
+        private readonly IGmailSender _gmailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -33,8 +30,7 @@ namespace CineTicket.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IGmailSender gmailSender // ✅ Inject
-        )
+            IGmailSender gmailSender)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -42,7 +38,7 @@ namespace CineTicket.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _gmailSender = gmailSender; // ✅
+            _gmailSender = gmailSender;
         }
 
         [BindProperty]
@@ -66,7 +62,7 @@ namespace CineTicket.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp.")]
             public string ConfirmPassword { get; set; }
 
             public string? Role { get; set; }
@@ -101,6 +97,7 @@ namespace CineTicket.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -115,50 +112,59 @@ namespace CineTicket.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
                     if (!string.IsNullOrEmpty(Input.Role))
                         await _userManager.AddToRoleAsync(user, Input.Role);
                     else
                         await _userManager.AddToRoleAsync(user, SD.Role_Customer);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    string otp = new Random().Next(100000, 999999).ToString();
+                    user.EmailConfirmationOTP = otp;
+                    user.OTPGeneratedTime = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
 
-                    // ✅ Soạn nội dung HTML gửi mail
+                    var verifyUrl = Url.Page(
+                        "/Account/VerifyOtp",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = user.Id, email = user.Email },
+                        protocol: Request.Scheme
+                    );
+
                     var emailContent = $@"
-<div style='font-family:sans-serif; padding:30px; background:#f9f9f9; border-radius:10px; max-width:600px; margin:auto'>
-    <div style='background:#dc3545; padding:20px; border-radius:10px 10px 0 0; color:white; text-align:center'>
-        <h2 style='margin:0'>CineTicket 🎬</h2>
-        <p>Xác nhận tài khoản của bạn</p>
+<div style='max-width: 600px; margin: auto; font-family: Segoe UI, sans-serif; background: #f7f7f7; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
+    <div style='background: #dc3545; padding: 24px; text-align: center; color: white;'>
+        <h1 style='margin: 0; font-size: 28px;'>🎬 CineTicket</h1>
+        <p style='margin: 0; font-size: 16px;'>Xác nhận tài khoản của bạn</p>
     </div>
-    <div style='padding:30px; text-align:center;'>
-        <p>Chào <b>{user.Email}</b>,</p>
-        <p>Cảm ơn bạn đã đăng ký. Vui lòng nhấn nút bên dưới để xác nhận tài khoản.</p>
-        <a href='{callbackUrl}' style='display:inline-block; margin-top:20px; padding:12px 24px; background-color:#dc3545; color:white; text-decoration:none; border-radius:6px;'>Xác nhận tài khoản</a>
-        <p style='margin-top:20px; font-size:0.9em; color:#6c757d;'>Nếu bạn không tạo tài khoản, vui lòng bỏ qua email này.</p>
+    <div style='padding: 30px; background-color: #ffffff; text-align: center;'>
+        <p style='font-size: 16px;'>Chào <b style='color: #007bff;'>{user.Email}</b>,</p>
+        <p style='margin-top: 8px;'>Cảm ơn bạn đã đăng ký. Vui lòng sử dụng mã OTP bên dưới để xác nhận tài khoản:</p>
+
+        <div style='margin: 20px auto; font-size: 32px; font-weight: bold; color: #dc3545;'>{otp}</div>
+
+        <a href='{verifyUrl}' style='
+            display: inline-block;
+            margin-top: 20px;
+            padding: 14px 28px;
+            background-color: #dc3545;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        '>Xác nhận tài khoản</a>
+
+        <p style='margin-top: 30px; font-size: 13px; color: #6c757d;'>Mã OTP sẽ hết hạn sau 10 phút. Nếu bạn không yêu cầu tạo tài khoản, vui lòng bỏ qua email này.</p>
+    </div>
+    <div style='background-color: #f1f1f1; text-align: center; padding: 12px; font-size: 12px; color: #888;'>
+        © 2025 CineTicket. All rights reserved.
     </div>
 </div>";
 
-                    // ✅ Gửi bằng Hangfire
                     BackgroundJob.Enqueue(() =>
-                        _gmailSender.SendEmail(user.Email, "Xác nhận tài khoản CineTicket", emailContent));
+                        _gmailSender.SendEmail(user.Email, "Mã OTP xác nhận tài khoản", emailContent));
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToPage("VerifyOtp", new { area = "Identity", userId = user.Id, email = user.Email });
                 }
 
                 foreach (var error in result.Errors)
@@ -176,14 +182,14 @@ namespace CineTicket.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. Make sure it's not abstract and has a parameterless constructor.");
+                throw new InvalidOperationException($"Không thể tạo instance của '{nameof(ApplicationUser)}'.");
             }
         }
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("UserStore không hỗ trợ email.");
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }

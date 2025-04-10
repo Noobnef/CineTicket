@@ -2,8 +2,8 @@ using CineTicket.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Hangfire; // ?? thêm m?i
-using Hangfire.SqlServer; // ?? thêm m?i
+using Hangfire; // ✅ thêm mới
+using Hangfire.SqlServer; // ✅ thêm mới
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using CineTicket.Repositories;
@@ -31,13 +31,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Home/AccessDenied";
 });
 
-
 builder.Services.AddRazorPages();
-// 👉 Thêm dòng này để inject gửi mail
+// ✅ Thêm gửi mail
 builder.Services.AddTransient<IGmailSender, GmailSender>();
 builder.Services.AddTransient<IEmailSender, GmailSender>();
 
-// 👉 Đăng ký Hangfire
+// ✅ Đăng ký Hangfire
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
@@ -49,7 +48,7 @@ builder.Services.AddHangfire(configuration => configuration
         UseRecommendedIsolationLevel = true,
         DisableGlobalLocks = true
     }));
-builder.Services.AddHangfireServer(); // 👉 Khởi tạo server nền Hangfire
+builder.Services.AddHangfireServer(); // ✅ Khởi tạo server nền Hangfire
 
 // Cấu hình các ngôn ngữ được hỗ trợ
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -84,12 +83,10 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 // Áp dụng localization
@@ -106,12 +103,6 @@ app.UseHangfireDashboard();
 
 app.MapStaticAssets();
 
-//app.MapControllerRoute(
-//    name: "Admin",
-//    //pattern: "{area:exists}/{controller=Admin}/{action=Users}/{id?}"
-//    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-//);
-
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Movies}/{action=Index}/{id?}"
@@ -121,7 +112,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
-
-
 
 app.Run();
