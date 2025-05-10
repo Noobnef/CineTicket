@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -9,201 +10,193 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
     <link rel="stylesheet" href="~/css/Movie.css">
-
+    <link href="~/css/darkmode.css" rel="stylesheet" />
+    <link href="~/css/lightmode.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container-fluid py-3">
-        <div class="container mt-4">
-            <!-- Hero Banner -->
-            <div class="section">
-                <h2 class="text-center mb-4 section-heading">PHIM HOT</h2>
-                <div id="imageSlider" class="carousel slide" data-bs-ride="carousel">
-                    <!-- Indicators -->
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="2"></button>
-                    </div>
+    <!-- Tìm kiếm -->
+    <div class="search-container d-flex justify-content-center mt-3 mb-4">
+        <div class="input-group w-50">
+            <input type="text" id="SearchProduct" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" autocomplete="off" />
+            <button id="searchButton" class="btn btn-primary">🔍 @Localizer["Search"]</button>
+        </div>
+    </div>
 
-                    <!-- Slides -->
-
-                    <div class="carousel-inner rounded">
-                        @{
-                            bool firstItem = true;
-                        }  @* Biến kiểm tra phần tử đầu tiên *@
-
-                        @foreach (var item in Model)
+    <div class="container">
+        <!-- Banner -->
+        <div class="mb-5">
+            <div id="imageSlider" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner rounded">
+                    @{
+                        bool firstItem = true;
+                        foreach (var item in Model)
                         {
                             <div class="carousel-item @(firstItem ? "active" : "")">
-                                <img src="@item.BannerUrl" class="d-block w-100" alt="@item.Title">
-                                <div class="carousel-caption d-none d-md-block">
-                                    @* <h3>@item.Title</h3> *@
-                                    @* <p>@item.Description</p> *@
-                                </div>
+                                <img src="@item.BannerUrl" class="d-block w-100" alt="@item.Title" />
                             </div>
-                            firstItem = false;  @* Sau phần tử đầu tiên, không gán active nữa *@
+                            firstItem = false;
                         }
-                    </div>
-
-
-                    
-
-                    <!-- Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#imageSlider" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#imageSlider" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                    }
                 </div>
-            </div>
-
-            <!-- Movie Selection -->
-            <div class="section" id="movie-selection">
-                <h2 class="text-center mb-4 section-heading">PHIM ĐANG CHIẾU</h2>
-                <div class="swiper-container movie-swiper">
-                    <div class="swiper-wrapper">
-                        @foreach (var item in Model)
-                        {
-                            <div class="swiper-slide">
-                                <div class="card">
-                                    <span class="badge-new">MỚI</span>
-                                    <img src="@item.PosterUrl" class="card-img-top" alt="@item.Title">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@item.Title</h5>
-                                        <p class="card-text"><small><i class="fas fa-clock"></i> @item.Duration phút</small></p>
-                                        <div class="d-flex justify-content-between">
-                                            <button class="btn btn-primary select-movie" data-movie-id="@item.Id" data-movie-name="@item.Title">Chọn</button>
-                                            <a href="@Url.Action("Details", "Movie", new { id = item.Id })" class="btn btn-outline-primary">Chi tiết</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-            </div>
-
-            <!-- Seat Selection -->
-            <div class="section" id="seat-selection">
-                <h2 class="text-center mb-4 section-heading">Chọn ghế</h2>
-
-                <div id="screening-time" class="text-center mb-4">
-                    <h5>Chọn suất chiếu:</h5>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary time-btn" data-time="10:00">10:00</button>
-                        <button type="button" class="btn btn-outline-primary time-btn" data-time="13:30">13:30</button>
-                        <button type="button" class="btn btn-outline-primary time-btn" data-time="16:00">16:00</button>
-                        <button type="button" class="btn btn-outline-primary time-btn" data-time="19:30">19:30</button>
-                        <button type="button" class="btn btn-outline-primary time-btn" data-time="22:00">22:00</button>
-                    </div>
-                </div>
-
-                <div class="text-center mb-4">
-                    <p>Màn hình</p>
-                    <div class="screen"></div>
-                </div>
-
-                <div class="seat-legend">
-                    <div class="legend-item">
-                        <div class="legend-box legend-available"></div>
-                        <span>Ghế trống</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-box legend-selected"></div>
-                        <span>Ghế đã chọn</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-box legend-occupied"></div>
-                        <span>Ghế đã đặt</span>
-                    </div>
-                </div>
-
-                <div id="seat-container" class="text-center">
-                    <div class="row">
-                        <button class="seat" data-seat="A1">A1</button>
-                        <button class="seat" data-seat="A2">A2</button>
-                        <button class="seat occupied" data-seat="A3">A3</button>
-                        <button class="seat" data-seat="A4">A4</button>
-                        <button class="seat" data-seat="A5">A5</button>
-                        <button class="seat occupied" data-seat="A6">A6</button>
-                        <button class="seat" data-seat="A7">A7</button>
-                        <button class="seat" data-seat="A8">A8</button>
-                    </div>
-                    <div class="row">
-                        <button class="seat" data-seat="B1">B1</button>
-                        <button class="seat" data-seat="B2">B2</button>
-                        <button class="seat" data-seat="B3">B3</button>
-                        <button class="seat occupied" data-seat="B4">B4</button>
-                        <button class="seat" data-seat="B5">B5</button>
-                        <button class="seat" data-seat="B6">B6</button>
-                        <button class="seat" data-seat="B7">B7</button>
-                        <button class="seat" data-seat="B8">B8</button>
-                    </div>
-                    <div class="row">
-                        <button class="seat" data-seat="C1">C1</button>
-                        <button class="seat occupied" data-seat="C2">C2</button>
-                        <button class="seat" data-seat="C3">C3</button>
-                        <button class="seat" data-seat="C4">C4</button>
-                        <button class="seat" data-seat="C5">C5</button>
-                        <button class="seat" data-seat="C6">C6</button>
-                        <button class="seat occupied" data-seat="C7">C7</button>
-                        <button class="seat" data-seat="C8">C8</button>
-                    </div>
-                    <div class="row">
-                        <button class="seat" data-seat="D1">D1</button>
-                        <button class="seat" data-seat="D2">D2</button>
-                        <button class="seat" data-seat="D3">D3</button>
-                        <button class="seat" data-seat="D4">D4</button>
-                        <button class="seat occupied" data-seat="D5">D5</button>
-                        <button class="seat" data-seat="D6">D6</button>
-                        <button class="seat" data-seat="D7">D7</button>
-                        <button class="seat" data-seat="D8">D8</button>
-                    </div>
-                </div>
-
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Thông tin đặt vé</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><i class="fas fa-film me-2"></i>Phim: <span id="selectedMovie">Chưa chọn</span></p>
-                                <p><i class="fas fa-clock me-2"></i>Suất chiếu: <span id="selectedTime">Chưa chọn</span></p>
-                                <p><i class="fas fa-chair me-2"></i>Ghế đã chọn: <span id="selectedSeats">Chưa chọn</span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><i class="fas fa-tag me-2"></i>Đơn giá: 50.000 VNĐ/vé</p>
-                                <p><i class="fas fa-ticket-alt me-2"></i>Số lượng: <span id="ticketCount">0</span> vé</p>
-                                <p><i class="fas fa-money-bill-wave me-2"></i>Tổng tiền: <span id="totalPrice">0</span> VNĐ</p>
-                            </div>
-                        </div>
-                        <div class="progress mt-3">
-                            <div id="bookingProgress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4">
-                    <form id="paymentForm" action="/Payment/Process" method="post">
-                        <input type="hidden" id="hiddenSeats" name="selectedSeats" value="">
-                        <input type="hidden" id="hiddenAmount" name="amount" value="0">
-                        <button id="checkout" class="btn btn-success btn-lg" disabled>
-                            <i class="fas fa-credit-card me-2"></i>Xác nhận thanh toán
-                        </button>
-                    </form>
-                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#imageSlider" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imageSlider" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
             </div>
         </div>
 
-        
+        <!-- Swiper -->
+        <h2 class="text-center mb-4">@Localizer["NowShowing"]</h2>
+        <div class="swiper movie-swiper">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model)
+                {
+                    <div class="swiper-slide">
+                        <div class="card shadow-sm h-100 position-relative">
+                            <img src="@item.PosterUrl" class="card-img-top" alt="@item.Title" />
+                            @if (item.HasShowtime)
+                            {
+                                <span class="badge bg-success position-absolute top-0 start-0 m-2">@Localizer["Showtime"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary position-absolute top-0 start-0 m-2">@Localizer["NoShowtime"]</span>
+
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@item.Title</h5>
+                                <p class="card-text">
+                                    <small><i class="fas fa-clock"></i> @item.Duration @Localizer["Minutes"]</small>
+                                </p>
+                                <a asp-controller="Movie" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-auto">
+                                    @Localizer["Details"]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-    <script src="~/js/movie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script>
+        // Autocomplete tìm kiếm
+        $(function () {
+            $("#SearchProduct").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Movie/Search",
+                        type: "GET",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.label,
+                                    value: item.label,
+                                    id: item.value
+                                };
+                            }));
+                        }
+                    });
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    window.location.href = "/Movie/Details/" + ui.item.id;
+                }
+            });
+
+            $("#searchButton").click(function () {
+                var term = $("#SearchProduct").val();
+                if (term.length > 0) {
+                    $.get("/Movie/Search", { term: term }, function (data) {
+                        if (data.length > 0) {
+                            window.location.href = "/Movie/Details/" + data[0].value;
+                        } else {
+                            alert("@Localizer["NotFound"]");
+                        }
+                    });
+                }
+            });
+        });
+
+        // Swiper khởi tạo
+        const swiper = new Swiper('.movie-swiper', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 10,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 4, spaceBetween: 30 }
+            }
+        });
+    </script>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+        <script src="~/js/movie.js"></script>
+        @section Scripts {
+            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+            <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+            <script>
+                $(document).ready(function () {
+                    // Autocomplete
+                    $("#SearchProduct").autocomplete({
+                        source: function (request, response) {
+                            $.ajax({
+                                url: "/Movie/Search",
+                                type: "GET",
+                                data: { term: request.term },
+                                success: function (data) {
+                                    response($.map(data, function (item) {
+                                        return {
+                                            label: item.label,
+                                            value: item.label,
+                                            id: item.value
+                                        };
+                                    }));
+                                }
+                            });
+                        },
+                        minLength: 1,
+                        select: function (event, ui) {
+                            window.location.href = "/Movie/Details/" + ui.item.id;
+                        }
+                    });
+
+                    // Bấm nút Search
+                    $("#searchButton").on("click", function () {
+                        var term = $("#SearchProduct").val();
+                        if (term.length > 0) {
+                            $.get("/Movie/Search", { term: term }, function (data) {
+                                if (data.length > 0) {
+                                    window.location.href = "/Movie/Details/" + data[0].value;
+                                } else {
+                                    alert("@Localizer["NotFound"]");
+                                }
+                            });
+                        }
+                    });
+                });
+            </script>
+        }
 </body>
 </html>

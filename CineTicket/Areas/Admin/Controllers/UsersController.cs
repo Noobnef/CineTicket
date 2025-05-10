@@ -67,7 +67,6 @@ namespace CineTicket.Areas.Admin.Controllers
             {
                 await _userManager.AddToRoleAsync(user, model.SelectedRole);
 
-                // Nếu ApplicationUser có property Role, cập nhật luôn:
                 user.Role = model.SelectedRole;
                 await _userManager.UpdateAsync(user);
             }
@@ -75,7 +74,31 @@ namespace CineTicket.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
 
+            return View(user);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Xóa người dùng thành công";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Error"] = "Xóa người dùng thất bại";
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

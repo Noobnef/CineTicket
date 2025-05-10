@@ -1,133 +1,49 @@
-﻿@model CineTicket.Models.BookingViewModel
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model CineTicket.Models.BookingViewModel
+
+@{
+    // JSON encode danh sách ghế đã đặt
+    var bookedSeatsJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model.AlreadyBookedSeats ?? new List<string>());
+}
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chọn Ghế - @Model.MovieTitle</title>
+    <title>@Localizer["SelectedSeat"] - @Model.MovieTitle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        :root {
-            --primary-color: #6c5ce7;
-            --secondary-color: #d63031;
-            --light-gray: #f1f2f6;
-        }
-
-        body {
-            background-color: var(--light-gray);
-            font-family: 'Inter', Arial, sans-serif;
-        }
-
-        .theater-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .screen {
-            background: linear-gradient(to right, #2c3e50, #3498db);
-            color: white;
-            padding: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-            border-radius: 10px;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        .seat-container {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .seat {
-            aspect-ratio: 1/1;
-            background-color: #e0e0e0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            border: 2px solid transparent;
-        }
-
-            .seat:hover:not(.occupied) {
-                transform: scale(1.05);
-                border-color: var(--primary-color);
-            }
-
-            .seat.selected {
-                background-color: var(--primary-color);
-                color: white;
-                border-color: var(--primary-color);
-            }
-
-            .seat.occupied {
-                background-color: var(--secondary-color);
-                cursor: not-allowed;
-                color: white;
-                opacity: 0.7;
-            }
-
-        .seat-label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: rgba(0,0,0,0.6);
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-            .legend .seat {
-                width: 25px;
-                height: 25px;
-            }
-
-        .total-section {
-            margin-top: 20px;
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
-        }
-    </style>
+    <link href="~/css/darkmode.css" rel="stylesheet" />
+	<link href="~/css/lightmode.css" rel="stylesheet" />
+	<link href="~/css/indexbooking.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-        <div class="theater-container">
-            <h2 class="text-center mb-4">Chọn Ghế - @Model.MovieTitle</h2>
-            <div class="screen">MÀN HÌNH</div>
+    <div class="container py-5">
+        <div class="theater-card mx-auto" style="max-width: 850px;">
+            <h2 class="text-center mb-4">@Localizer["SelectedSeat"] - @Model.MovieTitle</h2>
+            <div class="screen">@Localizer["SCREEN"]</div>
+
+            <!-- Khu vực ghế -->
             <div class="seat-container" id="seat-container"></div>
 
+            <!-- Chú thích -->
             <div class="legend">
-                <span><div class="seat"></div> Ghế trống</span>
-                <span><div class="seat selected"></div> Đang chọn</span>
-                <span><div class="seat occupied"></div> Đã đặt</span>
+                <span><div class="seat"></div>@Localizer["AvailableSeat"]</span>
+                <span><div class="seat selected"></div>@Localizer["SelectedSeat"]</span>
+                <span><div class="seat occupied"></div>@Localizer["BookedSeat"]</span>
             </div>
 
-            
-
+            <!-- Hiển thị tổng tiền -->
             <div class="total-section text-center">
-                <h4>Tổng tiền: <span id="total-price" class="text-primary">0</span> VND</h4>
-                <button id="book-btn" class="btn btn-secondary mt-3" disabled>Đặt vé</button>
+                <h4>
+                    @Localizer["Total"]:
+                    <span id="total-price" class="text-primary">0</span> VND
+                </h4>
+                <button id="book-btn" class="btn btn-secondary mt-3" disabled>@Localizer["BookNow"]</button>
             </div>
         </div>
     </div>
 
+    <!-- Form ẩn gửi dữ liệu -->
     <form id="booking-form" method="post" asp-action="ConfirmBooking">
         <input type="hidden" name="MovieId" value="@Model.MovieId" />
         <input type="hidden" name="MovieTitle" value="@Model.MovieTitle" />
@@ -136,72 +52,100 @@
         <input type="hidden" name="SeatNumbers" id="selected-seats" />
     </form>
 
-
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function () {
             const seatContainer = document.getElementById("seat-container");
             const totalPriceElement = document.getElementById("total-price");
             const bookButton = document.getElementById("book-btn");
-            const seatPrice = parseInt("@Model.TicketPrice");
+
+            // Giá vé từ model
+            const seatPrice = @Model.TicketPrice;
+            const bookedSeats = @Html.Raw(bookedSeatsJson);
+
+            // Mảng lưu các ghế đã chọn
+            const selectedSeatsArray = [];
+
+            // Render ghế
             const rowLabels = ['A', 'B', 'C', 'D', 'E'];
-
-            const seats = [];
-            for (let row = 0; row < rowLabels.length; row++) {
+            rowLabels.forEach(row => {
                 for (let col = 1; col <= 8; col++) {
-                    seats.push({
-                        id: `${rowLabels[row]}${col}`,
-                        occupied: Math.random() < 0.2
-                    });
-                }
-            }
+                    const seatId = `${row}${col}`;
 
-            seats.forEach(seat => {
-                const seatElement = document.createElement("div");
-                seatElement.classList.add("seat");
+                    const seatElement = document.createElement("div");
+                    seatElement.classList.add("seat");
+                    seatElement.dataset.id = seatId;
 
-                const seatLabel = document.createElement("span");
-                seatLabel.classList.add("seat-label");
-                seatLabel.textContent = seat.id;
+                    const seatLabel = document.createElement("span");
+                    seatLabel.classList.add("seat-label");
+                    seatLabel.textContent = seatId;
+                    seatElement.appendChild(seatLabel);
 
-                if (seat.occupied) {
-                    seatElement.classList.add("occupied");
-                }
-
-                seatElement.appendChild(seatLabel);
-                seatElement.addEventListener("click", () => {
-                    if (!seat.occupied) {
-                        seatElement.classList.toggle("selected");
-                        updateTotal();
+                    if (bookedSeats.includes(seatId)) {
+                        seatElement.classList.add("occupied");
                     }
-                });
 
-                seatContainer.appendChild(seatElement);
+                    seatElement.addEventListener("click", () => {
+                        if (seatElement.classList.contains("occupied")) return;
+
+                        const index = selectedSeatsArray.indexOf(seatId);
+
+                        if (index === -1) {
+                            // Chọn ghế
+                            selectedSeatsArray.push(seatId);
+                            seatElement.classList.add("selected");
+                        } else {
+                            // Bỏ chọn ghế
+                            selectedSeatsArray.splice(index, 1);
+                            seatElement.classList.remove("selected");
+                        }
+
+                        console.log("Ghế đã chọn:", selectedSeatsArray);
+                        updateTotal();
+                    });
+
+                    seatContainer.appendChild(seatElement);
+                }
             });
+
+            // Khởi tạo giá trị ban đầu
+            totalPriceElement.textContent = "0";
+            bookButton.disabled = true;
 
             function updateTotal() {
-                const selectedSeats = document.querySelectorAll(".seat.selected");
-                const total = selectedSeats.length * seatPrice;
+                const total = selectedSeatsArray.length * seatPrice;
+
+                console.log("Số ghế đã chọn (từ mảng):", selectedSeatsArray.length);
+                console.log("Danh sách ghế:", selectedSeatsArray.join(', '));
+                console.log("Tổng tiền:", total);
+
                 totalPriceElement.textContent = total.toLocaleString("vi-VN");
 
-                bookButton.disabled = selectedSeats.length === 0;
-                bookButton.className = selectedSeats.length > 0
+                bookButton.disabled = selectedSeatsArray.length === 0;
+                bookButton.className = selectedSeatsArray.length > 0
                     ? "btn btn-primary mt-3"
                     : "btn btn-secondary mt-3";
+
+                document.getElementById("selected-seats").value = selectedSeatsArray.join(',');
             }
 
-            bookButton.addEventListener("click", () => {
-                const selectedSeats = document.querySelectorAll(".seat.selected");
-                const selectedSeatIds = Array.from(selectedSeats)
-                    .map(seat => {
-                        const label = seat.querySelector('.seat-label');
-                        return label ? label.textContent : '';
-                    })
-                    .filter(label => label !== '');
+                    bookButton.addEventListener("click", () => {
+            if (selectedSeatsArray.length === 0) {
+                alert("@Localizer["PleaseSelectSeat"]");
+                return;
+            }
 
-                document.getElementById("selected-seats").value = selectedSeatIds.join(',');
+            const seatList = selectedSeatsArray.join(', ');
+            const total = selectedSeatsArray.length * seatPrice;
+
+            const message = `🎬 Xác nhận đặt vé\nPhim: @Html.Raw(Model.MovieTitle.Replace("'", "\\'"))\nGhế: ${seatList}\nTổng tiền: ${total.toLocaleString('vi-VN')} VND\n\nBạn có muốn tiếp tục đặt vé?`;
+
+            if (confirm(message)) {
                 document.getElementById("booking-form").submit();
-            });
+            }
         });
-    </script>
+
+        });
+	</script>
+	<script src="~/js/movie.js"></script>
 </body>
 </html>

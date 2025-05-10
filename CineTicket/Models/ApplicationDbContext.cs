@@ -14,5 +14,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Showtime> Showtimes { get; set; }
     public DbSet<Poster> Posters { get; set; }
     public DbSet<Seat> Seats { get; set; }
+    public DbSet<BookingHistory> BookingHistories { get; set; }
 
 }

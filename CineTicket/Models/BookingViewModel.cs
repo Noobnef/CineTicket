@@ -19,7 +19,9 @@ namespace CineTicket.Models
         [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán.")]
         public string PaymentMethod { get; set; }
 
-        public string SeatNumbers { get; set; } // Ghế dạng "A1,B2"
+        public string SeatNumbers { get; set; } 
+        public List<string> AlreadyBookedSeats { get; set; } = new List<string>();
+
     }
 
 }

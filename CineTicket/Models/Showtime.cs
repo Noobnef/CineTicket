@@ -1,5 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using CineTicket.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Identity.Client;
 
 namespace CineTicket.Models
 {
@@ -14,10 +18,14 @@ namespace CineTicket.Models
 
         [Required(ErrorMessage = "Vui lòng chọn phim.")]
         public int MovieId { get; set; }
-        public Movie Movie { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn phòng.")]
         public int RoomId { get; set; }
+        [ValidateNever]            
+        public Movie Movie { get; set; }
+
+        [ValidateNever]           
         public Room Room { get; set; }
+
     }
 }

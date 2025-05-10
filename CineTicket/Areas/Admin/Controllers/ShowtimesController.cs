@@ -1,14 +1,15 @@
 ﻿
 using CineTicket.Models;
+using CineTicket.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace CineTicket.Controllers
+namespace CineTicket.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class ShowtimesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,55 +27,80 @@ namespace CineTicket.Controllers
                 .ToListAsync();
             return View(showtimes);
         }
-
         public IActionResult Add()
         {
-            ViewBag.Movies = new SelectList(_context.Movies, "Id", "Title");
-            ViewBag.Rooms = new SelectList(_context.Rooms, "Id", "Name");
-            return View();
+            LoadDropdowns();
+
+            // StartTime = thoi diem hien tai
+            var model = new Showtime
+            {
+                StartTime = DateTime.Now
+            };
+
+            return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Showtime showtime)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Showtimes.Add(showtime);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                LoadDropdowns(showtime);
+                return View(showtime);
             }
-            return View(showtime);
-        }
 
+            _context.Add(showtime);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Thêm suất chiếu thành công!";
+            return RedirectToAction(nameof(Index));
+        }
+        private void LoadDropdowns(Showtime selected = null)
+        {
+            ViewBag.Movies = new SelectList(
+                _context.Movies.OrderBy(m => m.Title),
+                "Id", "Title",
+                selected?.MovieId);
+
+            ViewBag.Rooms = new SelectList(
+                _context.Rooms.OrderBy(r => r.Name),
+                "Id", "Name",
+                selected?.RoomId);
+        }
         public async Task<IActionResult> Edit(int id)
         {
             var showtime = await _context.Showtimes.FindAsync(id);
             if (showtime == null) return NotFound();
 
-            ViewBag.Movies = new SelectList(_context.Movies, "Id", "Title", showtime.MovieId);
-            ViewBag.Rooms = new SelectList(_context.Rooms, "Id", "Name", showtime.RoomId);
+            LoadDropdowns(showtime);
             return View(showtime);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Showtime showtime)
         {
             if (id != showtime.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                LoadDropdowns(showtime);
+                return View(showtime);
+            }
+
+            try
             {
                 _context.Update(showtime);
                 await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Cập nhật suất chiếu thành công!";
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Movies = new SelectList(_context.Movies, "Id", "Title", showtime.MovieId);
-            ViewBag.Rooms = new SelectList(_context.Rooms, "Id", "Name", showtime.RoomId);
-            return View(showtime);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Showtimes.Any(e => e.Id == id)) return NotFound();
+                throw;
+            }
         }
-
         public async Task<IActionResult> Delete(int id)
         {
             var showtime = await _context.Showtimes.FindAsync(id);
